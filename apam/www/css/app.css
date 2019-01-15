@@ -18,7 +18,10 @@ body {
   position: absolute;
   width: 100%;
   bottom: 40px;
-  margin: auto !important;
+  margin-left: auto;
+  margin-right: auto;
+  left: 0;
+  right: 0;
   padding-left: 40px;
   padding-right: 40px;
   height: 100px;
@@ -77,7 +80,7 @@ body {
 }
 .home-swiper .swiper-slide {
   box-sizing: border-box;
-  border: 1px solid #ddd;
+  border: 0px solid #ddd;
   background: #fff;
   -webkit-background-size:cover;
   -moz-background-size:cover;

@@ -1,6 +1,6 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
 const nama_instansi = 'RSUD H. Damanhuri'; // Hospital Name
-const apiUrl = 'http://localhost/webapps/pasien-rest/'; // API Server URL
+const apiUrl = 'http://api.rshdbarabai.com/pasien-rest/'; // API Server URL
 const startDate = -1; // Start date of day for registration
 const endDate = 7; // End date of day for registration
 
@@ -32,6 +32,8 @@ var mainView = app.views.create('.view-main', {
 
 // If authentication is success, moving to Main page.
 var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+var layout = localStorage.getItem("layout");
+var color = localStorage.getItem("color");
 
 document.addEventListener('deviceready', appReady, false);
 
@@ -41,6 +43,15 @@ function appReady(){
       clearPreviousHistory: true
     });
   }
+  if (layout) {
+    $$('.view').addClass(layout);
+  }
+  if (color) {
+    $$('.view').addClass(color);
+  }
+  document.addEventListener('resume', function(){
+    ga('send', 'pageview' , {'location' : 'http://api.rshdbarabai.com/pasien-rest/index.html' });
+  }, false);
   document.addEventListener('backbutton', onBackKeyDown.bind(this), false);
   function onBackKeyDown() {
       var page = app.views.main.router.currentPageEl.dataset.name;
@@ -74,7 +85,7 @@ var notifbooking = setInterval(function () {
         icon: '<i class="icon demo-icon color-red">!</i>',
         title: 'Pemberitahuan',
         titleRightText: 'saat ini',
-        subtitle: ''+ nama_instansi + '',
+        subtitle: 'RSUD H. Damanhuri',
         text: 'Pendaftaran tanggal '+ today +' berstatus <b>'+ stts +'</b>. Silahkan lihat data booking untuk detail dan tangkapan layar bukti daftar.',
         closeButton: true,
         closeOnClick: true,
@@ -101,7 +112,7 @@ var notifberkas = setInterval(function () {
         icon: '<i class="icon demo-icon color-red">!</i>',
         title: 'Pemberitahuan',
         titleRightText: 'saat ini',
-        subtitle: ''+ nama_instansi + '',
+        subtitle: 'RSUD H. Damanhuri',
         text: '<b>'+ stts +'</b>. Silahkan menuju ke Klinik pilihan anda di RSUD H. Damanhuri untuk mendapatkan layanan prioritas tanpa harus antri di loket pendaftaran.',
         closeButton: true,
         closeOnClick: true,
@@ -269,7 +280,7 @@ $$(document).on('page:init', '.page[data-name="bookingdetail"]', function(e) {
       html += '    Nomor Kartu Berobat: ' + no_rkm_medis + '';
       html += '    <div class="item-header">Tanggal daftar: ' + data[i]['tanggal_booking'] + '</div>';
       html += '    <div class="item-header">Tanggal periksa: ' + data[i]['tanggal_periksa'] + '</div>';
-      html += '    <div class="item-header">Status: ' + data[i]['status'] + '</div>';
+      html += '    <div class="item-header">Status validasi: ' + data[i]['status'] + '</div>';
       html += '    Klinik: ' + data[i]['nm_poli'] + '';
       html += '    <div class="item">Dokter: ' + data[i]['nm_dokter'] + '</div>';
       html += '    <div class="item">Nomor antrian: ' + data[i]['no_reg'] + '</div>';
@@ -307,7 +318,7 @@ $$(document).on('page:init', '.page[data-name="kamar"]', function(e) {
       html += '   <div class="item-title">';
       html += '    <div class="item">' + data[i]['kelas'] + '</div>';
       html += '    Tersedia: ' + data[i]['kosong'] + '';
-      html += '    <div class="item-footer">Kapasitas: ' + data[i]['total'] + '</div>';
+      html += '    <div style="font-size:12px;">Kapasitas: ' + data[i]['total'] + '</div>';
       html += '   </div>';
       html += '  </div>';
       html += ' </div>';
@@ -325,10 +336,55 @@ $$(document).on('page:init', '.page[data-name="kamar"]', function(e) {
 
 $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
 
+  var calendarDokter = app.calendar.create({
+    inputEl: '#dokter-calendar',
+    closeOnSelect: true,
+    on: {
+      closed: function () {
+        var tanggal = $$('#dokter-calendar').val();
+        console.log('Calendar closed' + tanggal + 'isinya')
+        //Getting History list
+        app.dialog.preloader("Loading...");
+        app.request.post(apiUrl + 'api.php', {
+          action: 'dokter',
+          tanggal: tanggal
+        }, function (data) {
+          app.dialog.close();
+          data = JSON.parse(data);
+
+          var html = '';
+          if(data.state == "notfound") {
+            html += '<li><div class="item-content">Tidak ada jadwal dokter hari ini</div></li>';
+          } else {
+            for(i=0; i<data.length; i++) {
+              html += '<li>';
+              html += ' <div class="item-content">';
+              html += '  <div class="item-media"><img src="img/' + data[i]['jk'] + '.png" width="44"></div>';
+              html += '  <div class="item-inner">';
+              html += '   <div class="item-title">';
+              html += '    <div class="item">' + data[i]['nm_poli'] + '</div>';
+              html += '    ' + data[i]['nm_dokter'] + '';
+              html += '    <div style="font-size:12px;">' + data[i]['jam_mulai'] + ' s/d ' + data[i]['jam_selesai'] + ' WITA</div>';
+              html += '   </div>';
+              html += '  </div>';
+              html += ' </div>';
+              html += '</li>';
+            }
+          }
+
+          $$(".dokter-list").html(html);
+
+        });
+      }
+    }
+  });
+
   //Getting History list
   app.dialog.preloader("Loading...");
   app.request.post(apiUrl + 'api.php', {
+    //var tanggal = new Date().getFullYear()+'-'+("0"+(new Date().getMonth()+1)).slice(-2)+'-'+("0"+new Date().getDate()).slice(-2);
     action: 'dokter',
+    tanggal: '2019-01-12'
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -345,7 +401,7 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
         html += '   <div class="item-title">';
         html += '    <div class="item">' + data[i]['nm_poli'] + '</div>';
         html += '    ' + data[i]['nm_dokter'] + '';
-        html += '    <div class="item-footer">' + data[i]['jam_mulai'] + ' s/d ' + data[i]['jam_selesai'] + ' WITA</div>';
+        html += '    <div style="font-size:12px;">' + data[i]['jam_mulai'] + ' s/d ' + data[i]['jam_selesai'] + ' WITA</div>';
         html += '   </div>';
         html += '  </div>';
         html += ' </div>';
@@ -457,12 +513,18 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail"]', function(e) {
 });
 
 //=================================================//
-// Load data untuk halaman profil.html               //
+  // Load data untuk halaman profil.html               //
 //=================================================//
 
 $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
 
   var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+
+  var getLayout = localStorage.getItem("layout");
+  $$("input[value=" + getLayout + "]").prop('checked', true);
+
+  var getColor = localStorage.getItem("color");
+  $$("option[value=" + getColor + "]").prop('selected', true);
 
   //Getting user information
   app.dialog.preloader('Loading...');
@@ -545,14 +607,33 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
     app.dialog.confirm('Anda yakin ingin signout?', function () {
       app.dialog.alert('Anda telah keluar sepenuhnya dari sistem!');
       localStorage.removeItem("no_rkm_medis");
+      //localStorage.removeItem("layout");
+      //localStorage.removeItem("color");
       mainView.router.navigate('/', {
         clearPreviousHistory: true
       });
     });
   });
 
-});
+  $$('input[name="layout"]').on('change', function () {
+    if (this.checked) {
+      localStorage.setItem("layout", this.value);
+      $$('.view').removeClass('theme-white');
+      $$('.view').addClass(this.value);
+    } else {
+      localStorage.setItem("layout", "theme-white");
+      $$('.view').removeClass('theme-dark');
+      $$('.view').addClass("theme-white");
+    }
+  });
 
+  $$('select[name="color"]').on('change', function () {
+    localStorage.setItem("color", this.value);
+    $$('.view').removeClass('color-theme-red color-theme-blue color-theme-green color-theme-pink color-theme-orange');
+    $$('.view').addClass(this.value);
+  });
+
+});
 
 //=================================================//
 // Load data untuk halaman daftar.html               //

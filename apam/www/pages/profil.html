@@ -71,20 +71,38 @@
           </div>
         </div>
 
-        <div class="block-title">Notifikasi</div>
+        <div class="block-title">Pengaturan</div>
         <div class="card">
           <div class="list simple-list">
             <ul>
               <li>
-                <span>Push Notifications</span>
+                <span>Tampilan Gelap</span>
                 <label class="toggle toggle-init color-blue">
-                  <input type="checkbox" name="toggle" checked>
+                  <input type="checkbox" name="layout" value="theme-dark">
                   <span class="toggle-icon"></span>
                 </label>
+              </li>
+              <li>
+                <span>Warna Tema</span>
+                <a class="item-link smart-select smart-select-init" data-open-in="page" data-close-on-select="true">
+                  <select id="color" name="color">
+                    <option value="color-theme-blue">Biru</option>
+                    <option value="color-theme-red">Merah</option>
+                    <option value="color-theme-green">Hijau</option>
+                    <option value="color-theme-pink">Pink</option>
+                    <option value="color-theme-orange">Oranye</option>
+                  </select>
+                  <div class="item-content">
+                    <div class="item-inner">
+                      <div class="item-title">Pilih Warna </div>
+                    </div>
+                  </div>
+                </a>
               </li>
             </ul>
           </div>
         </div>
+
         <div class="block padding-top">
           <button class="button button-big color-red logout-btn">Logout</button>
         </div>

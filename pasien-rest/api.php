@@ -116,9 +116,17 @@ if($action == "kamar") {
 }
 
 if($action == "dokter") {
+
+  $tanggal = @$_REQUEST['tanggal'];
+
+  if($tanggal) {
+    $getTanggal = $tanggal;
+  } else {
+    $getTanggal = $date;
+  }
   $results = array();
 
-  $hari = fetch_array(query("SELECT DAYNAME(current_date())"));
+  $hari = fetch_array(query("SELECT DAYNAME('$getTanggal')"));
   $namahari = "";
   if($hari[0] == "Sunday"){
       $namahari = "AKHAD";
