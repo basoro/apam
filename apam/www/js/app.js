@@ -1,8 +1,9 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
 const nama_instansi = 'RSUD H. Damanhuri'; // Hospital Name
-const apiUrl = 'http://localhost/webapps/pasien-rest/'; // API Server URL
+const apiUrl = 'http://basoro.io/APAM-Barabai/pasien-rest/'; // API Server URL
 const startDate = -1; // Start date of day for registration
 const endDate = 7; // End date of day for registration
+const debug = 1;
 
 // Dom7
 var $$ = Dom7;
@@ -35,25 +36,31 @@ var no_rkm_medis = localStorage.getItem("no_rkm_medis");
 var layout = localStorage.getItem("layout");
 var color = localStorage.getItem("color");
 
-document.addEventListener('deviceready', appReady, false);
-
-function appReady(){
+if (debug == '1') {
   if (no_rkm_medis) {
     mainView.router.navigate('/home/', {
       clearPreviousHistory: true
     });
   }
-  if (layout) {
-    $$('.view').addClass(layout);
-  }
-  if (color) {
-    $$('.view').addClass(color);
-  }
-  document.addEventListener('resume', function(){
-    ga('send', 'pageview' , {'location' : 'http://api.rshdbarabai.com/pasien-rest/index.html' });
-  }, false);
-  document.addEventListener('backbutton', onBackKeyDown.bind(this), false);
-  function onBackKeyDown() {
+} else {
+  document.addEventListener('deviceready', appReady, false);
+  function appReady(){
+    if (no_rkm_medis) {
+      mainView.router.navigate('/home/', {
+        clearPreviousHistory: true
+      });
+    }
+    if (layout) {
+      $$('.view').addClass(layout);
+    }
+    if (color) {
+      $$('.view').addClass(color);
+    }
+    document.addEventListener('resume', function(){
+      ga('send', 'pageview' , {'location' : 'http://api.rshdbarabai.com/pasien-rest/index.html' });
+    }, false);
+    document.addEventListener('backbutton', onBackKeyDown.bind(this), false);
+    function onBackKeyDown() {
       var page = app.views.main.router.currentPageEl.dataset.name;
       app.dialog.close();
       if (page === 'landing') {
@@ -69,6 +76,7 @@ function appReady(){
       } else {
         mainView.router.back();
       }
+    }
   }
 }
 
@@ -342,7 +350,7 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
     on: {
       closed: function () {
         var tanggal = $$('#dokter-calendar').val();
-        console.log('Calendar closed' + tanggal + 'isinya')
+        //console.log('Calendar closed' + tanggal + 'isinya')
         //Getting History list
         app.dialog.preloader("Loading...");
         app.request.post(apiUrl + 'api.php', {
@@ -354,7 +362,7 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
 
           var html = '';
           if(data.state == "notfound") {
-            html += '<li><div class="item-content">Tidak ada jadwal dokter hari ini</div></li>';
+            html += '<li><div class="item-content">Tidak ada jadwal dokter.</div></li>';
           } else {
             for(i=0; i<data.length; i++) {
               html += '<li>';
@@ -381,17 +389,18 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
 
   //Getting History list
   app.dialog.preloader("Loading...");
+  var today = new Date().getFullYear()+'-'+("0"+(new Date().getMonth()+1)).slice(-2)+'-'+("0"+new Date().getDate()).slice(-2);
+  //console.log('Get hari ini ' + today + 'bro isinya')
   app.request.post(apiUrl + 'api.php', {
-    //var tanggal = new Date().getFullYear()+'-'+("0"+(new Date().getMonth()+1)).slice(-2)+'-'+("0"+new Date().getDate()).slice(-2);
     action: 'dokter',
-    tanggal: '2019-01-12'
+    tanggal: today
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
 
     var html = '';
     if(data.state == "notfound") {
-      html += '<li><div class="item-content">Tidak ada jadwal dokter hari ini</div></li>';
+      html += '<li><div class="item-content">Tidak ada jadwal dokter.</div></li>';
     } else {
       for(i=0; i<data.length; i++) {
         html += '<li>';
@@ -886,126 +895,173 @@ $$(document).on('page:init', '.page[data-name="sukses"]', function(e) {
 
 $$(document).on('page:init', '.page[data-name="pengaduan"]', function(e) {
 
-  var messages = app.messages.create({
-    el: '.messages',
+  var no_rkm_medis = localStorage.getItem("no_rkm_medis");
 
-    // First message rule
-    firstMessageRule: function (message, previousMessage, nextMessage) {
-      // Skip if title
-      if (message.isTitle) return false;
-      /* if:
-        - there is no previous message
-        - or previous message type (send/received) is different
-        - or previous message sender name is different
-      */
-      if (!previousMessage || previousMessage.type !== message.type || previousMessage.name !== message.name) return true;
-      return false;
-    },
-    // Last message rule
-    lastMessageRule: function (message, previousMessage, nextMessage) {
-      // Skip if title
-      if (message.isTitle) return false;
-      /* if:
-        - there is no next message
-        - or next message type (send/received) is different
-        - or next message sender name is different
-      */
-      if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
-      return false;
-    },
-    // Last message rule
-    tailMessageRule: function (message, previousMessage, nextMessage) {
-      // Skip if title
-      if (message.isTitle) return false;
-        /* if (bascially same as lastMessageRule):
-        - there is no next message
-        - or next message type (send/received) is different
-        - or next message sender name is different
-      */
-      if (!nextMessage || nextMessage.type !== message.type || nextMessage.name !== message.name) return true;
-      return false;
+  //Getting Booking list
+  app.dialog.preloader("Loading...");
+  app.request.post(apiUrl + 'api.php', {
+    action: 'pengaduan',
+    no_rkm_medis: no_rkm_medis
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+
+      html += '<li class="swipeout">';
+      html += '    <a href="/pengaduan/' + no_rkm_medis + '/' + data[i]['id'] + '/" class="item-link item-content swipeout-content">';
+      html += '        <div class="item-media"><img src="img/' + data[i]['jk'] + '.png" width="44" alt=""></div>';
+      html += '        <div class="item-inner">';
+      html += '            <div class="item-title-row">';
+      html += '                <div class="item-title">' + data[i]['nm_pasien'] + '</div>';
+      html += '                <div class="item-after">' + data[i]['date_time'] + '</div>';
+      html += '            </div>';
+      html += '            <div class="item-text">' + data[i]['message'] + '</div>';
+      html += '        </div>';
+      html += '    </a>';
+      html += '</li>';
+
     }
+
+    $$(".pengaduan-list").html(html);
+
   });
 
-  // Init Messagebar
-  var messagebar = app.messagebar.create({
-    el: '.messagebar'
-  });
+  $$('.page[data-name="pengaduan"] .pengaduan-btn').on('click', function () {
 
-  // Response flag
-  var responseInProgress = false;
+    var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+    var message = $$('#pengaduan-form .message').val();
 
-  // Send Message
-  $$('.send-link').on('click', function () {
-    var text = messagebar.getValue().replace(/\n/g, '<br>').trim();
-    // return if empty message
-    if (!text.length) return;
+    if(message == "") {
+      app.router.back('/pengaduan/', {
+        ignoreCache: true,
+        force: true,
+        context: {}
+      });
+    } else {
 
-    // Clear area
-    messagebar.clear();
-
-    // Return focus to area
-    messagebar.focus();
-
-    // Add message to messages
-    messages.addMessage({
-      text: text,
-    });
-
-    if (responseInProgress) return;
-    // Receive dummy message
-    receiveMessage();
-  });
-
-  // Dummy response
-  var answers = [
-    'Ya!',
-    'Tidak',
-    'Hm...',
-    'Kami tidak yakin',
-    'Mungkin saja ;)',
-    'Apa?',
-    'Apakah anda yakin?',
-    'Tentu saja',
-    'Keluhan anda kami catat',
-    'Luar biasa!!!'
-  ]
-  var people = [
-    {
-      name: 'Layanan Pelanggan',
-      avatar: 'img/P.png'
-    },
-    {
-      name: 'Admin Utama',
-      avatar: 'img/L.png'
-    }
-  ];
-  function receiveMessage() {
-    responseInProgress = true;
-    setTimeout(function () {
-      // Get random answer and random person
-      var answer = answers[Math.floor(Math.random() * answers.length)];
-      var person = people[Math.floor(Math.random() * people.length)];
-
-      // Show typing indicator
-      messages.showTyping({
-        header: person.name + ' is typing',
-        avatar: person.avatar
+      app.request.post(apiUrl + 'api.php', {
+        action: "simpanpengaduan",
+        no_rkm_medis: no_rkm_medis,
+        message: message
+      }, function (data) {
+        app.dialog.close();
+        data = JSON.parse(data);
+        if(data.state == "success") {
+          app.dialog.alert('Pengaduan anda telah disimpan!. Silahkan tekan tombol <b>Ya</b> untuk kembali ke halaman utama.', function () {
+            app.router.back('/home/', {
+              ignoreCache: true,
+              force: true,
+              context: {}
+            });
+          });
+        }
       });
 
-      setTimeout(function () {
-        // Add received dummy message
-        messages.addMessage({
-          text: answer,
-          type: 'received',
-          name: person.name,
-          avatar: person.avatar
-        });
-        // Hide typing indicator
-        messages.hideTyping();
-        responseInProgress = false;
-      }, 4000);
-    }, 1000);
-  }
+    }
+
+    app.sheet.close('.pengaduan-sheet');
+
+  });
+
+});
+
+
+//=================================================//
+// Load data untuk halaman riwayat-detail.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
+
+  var page = e.detail;
+  var no_rkm_medis = page.route.params.no_rkm_medis;
+  var pengaduan_id = page.route.params.id;
+
+  //Getting History list
+  app.dialog.preloader("Loading...");
+  app.request.post(apiUrl + 'api.php', {
+    action: 'pengaduandetail',
+    no_rkm_medis: no_rkm_medis,
+    pengaduan_id: pengaduan_id
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+
+    if(data.state == "invalid") {
+
+      html += '<div class="card demo-facebook-card">';
+      html += '  <div class="card-header">';
+      html += '    <div class="demo-facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
+      html += '    <div class="demo-facebook-name">Bagian Pengaduan</div>';
+      html += '    <div class="demo-facebook-date">' + nama_instansi + '</div>';
+      html += '  </div>';
+      html += '  <div class="card-content card-content-padding">';
+      html += '    <p>Pengaduan dengan nomor #<b>' + pengaduan_id + '</b> masih dalam proses verifikasi. Maaf atas ketidaknyamanan ini.</p>';
+      html += '  </div>';
+      html += '</div>';
+
+    } else {
+
+      for(i=0; i<data.length; i++) {
+
+        html += '<div class="card demo-facebook-card">';
+        html += '  <div class="card-header">';
+        html += '    <div class="demo-facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
+        html += '    <div class="demo-facebook-name">' + data[i]['nama'] + '</div>';
+        html += '    <div class="demo-facebook-date">' + data[i]['date_time'] + '</div>';
+        html += '  </div>';
+        html += '  <div class="card-content card-content-padding">';
+        html += '    <p>' + data[i]['message'] + '</p>';
+        html += '  </div>';
+        html += '</div>';
+
+      }
+    }
+
+    $$(".pengaduan-detail").html(html);
+
+  });
+
+  $$('.page[data-name="pengaduandetail"] .pengaduandetail-btn').on('click', function () {
+
+    var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+    var message = $$('#pengaduandetail-form .message').val();
+    var pengaduan_id = page.route.params.id;
+
+    if(message == "") {
+      app.router.back('/pengaduan/', {
+        ignoreCache: true,
+        force: true,
+        context: {}
+      });
+    } else {
+
+      app.request.post(apiUrl + 'api.php', {
+        action: "simpanpengaduandetail",
+        no_rkm_medis: no_rkm_medis,
+        message: message,
+        pengaduan_id: pengaduan_id
+      }, function (data) {
+        app.dialog.close();
+        data = JSON.parse(data);
+        if(data.state == "success") {
+          app.dialog.alert('Balasan pengaduan anda telah disimpan!. Silahkan tekan tombol <b>Ya</b> untuk kembali ke halaman pngaduan.', function () {
+            app.router.back('/pengaduan/', {
+              ignoreCache: true,
+              force: true,
+              context: {}
+            });
+          });
+        }
+      });
+
+    }
+
+    app.sheet.close('.pengaduandetail-sheet');
+
+  });
 
 });

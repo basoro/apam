@@ -32,6 +32,10 @@ routes = [
     url: './pages/pengaduan.html',
   },
   {
+    path: '/pengaduan/:no_rkm_medis/:id/',
+    url: './pages/pengaduan-detail.html',
+  },
+  {
     path: '/booking/:no_rkm_medis/:tanggal_periksa/:no_reg/',
     url: './pages/booking-detail.html',
   },

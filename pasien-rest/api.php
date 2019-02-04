@@ -5,7 +5,6 @@ header("Access-Control-Allow-Headers: X-Requested-With");
 
 require_once('config.php');
 
-//$_REQUEST['action'] = "settings";
 $action = trim(isset($_REQUEST['action'])?$_REQUEST['action']:null);
 
 if($action == "signin") {
@@ -153,7 +152,7 @@ if($action == "dokter") {
     $send_data['state'] = 'notfound';
     echo json_encode($send_data);
   } else {
-    while ($row = fetch_array($result)) {
+    while ($row = fetch_assoc($result)) {
       $results[] = $row;
     }
     echo json_encode($results);
@@ -307,7 +306,70 @@ if($action == "sukses") {
   while ($row = fetch_array($result)) {
     $results[] = $row;
   }
+  echo json_encode($results, JSON_PRETTY_PRINT);
+}
+
+if($action == "pengaduan") {
+  $results = array();
+  $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
+  $sql = "SELECT a.*, b.nm_pasien, b.jk FROM pengaduan a, pasien b WHERE a.username = '$no_rkm_medis' AND a.username = b.no_rkm_medis ORDER BY a.date_time";
+  $result = query($sql);
+  while ($row = fetch_array($result)) {
+    $results[] = $row;
+  }
   echo json_encode($results);
+}
+
+
+if($action == "pengaduandetail") {
+  $results = array();
+  $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
+  $pengaduan_id = trim($_REQUEST['pengaduan_id']);
+  $sql = "(SELECT a.*, b.nm_pasien as nama, b.jk FROM pengaduan_detail a, pasien b WHERE a.pengaduan_id = '$pengaduan_id' AND a.username = b.no_rkm_medis) UNION (SELECT a.*, b.nama as nama, b.jk FROM pengaduan_detail a, petugas b WHERE a.pengaduan_id = '$pengaduan_id' AND a.username = b.nip) ORDER BY date_time ASC";
+  $result = query($sql);
+  if(num_rows($result) == 0) {
+    $data['state'] = 'invalid';
+    echo json_encode($data);
+  } else {
+    while ($row = fetch_assoc($result)) {
+      $results[] = $row;
+    }
+    echo json_encode($results);
+  }
+}
+
+if($action == "simpanpengaduan") {
+  $send_data = array();
+
+  $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
+  $message = trim($_REQUEST['message']);
+
+  $list['username'] = escape($no_rkm_medis);
+  $list['message'] = escape($message);
+  insertTable('pengaduan', $list);
+
+  $send_data['state'] = 'success';
+  $send_data['userid'] = mysqli_insert_id($connection);
+  echo json_encode($send_data);
+
+}
+
+if($action == "simpanpengaduandetail") {
+  $send_data = array();
+
+  $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
+  $message = trim($_REQUEST['message']);
+  $pengaduan_id = trim($_REQUEST['pengaduan_id']);
+
+  $list['pengaduan_id'] = escape($pengaduan_id);
+  $list['username'] = escape($no_rkm_medis);
+  $list['message'] = escape($message);
+  insertTable('pengaduan_detail', $list);
+
+  $send_data['state'] = 'success';
+  $send_data['userid'] = mysqli_insert_id($connection);
+  echo json_encode($send_data);
+
 }
 
 ?>
