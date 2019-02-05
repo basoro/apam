@@ -383,8 +383,7 @@ if($action == "cekrujukan") {
   $r=fread($f,1000);
   fclose($f);
 
-  //$no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
-  $no_rkm_medis = "049970";
+  $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
   $check = fetch_assoc(query("SELECT no_peserta FROM pasien WHERE no_rkm_medis = '$no_rkm_medis'"));
   $no_peserta = $check['no_peserta'];
 
