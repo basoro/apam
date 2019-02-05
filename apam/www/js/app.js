@@ -266,19 +266,10 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
 
     var html = '';
 
-    if(data.state == "error") {
-
-      html += '<div class="card demo-facebook-card">';
-      html += '  <div class="card-header">';
-      html += '    <div class="demo-facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
-      html += '    <div class="demo-facebook-name">Bagian Pengaduan</div>';
-      html += '    <div class="demo-facebook-date">' + nama_instansi + '</div>';
-      html += '  </div>';
-      html += '  <div class="card-content card-content-padding">';
-      html += '    <p>Anda tidak terdafar sebagai peserta BPJS atau No BPJS anda tidak valid. Silahkan hubungi bagian pengaduan.</p>';
-      html += '  </div>';
-      html += '</div>';
-
+    if(data.state == "offline") {
+      //Jika server BPJS Down
+    } else if(data.state == "error") {
+      //Jika tidak terdaftar sebagai peserta BPJS
     } else {
 
       for(i=0; i<data.length; i++) {

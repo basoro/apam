@@ -3,11 +3,11 @@ header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: GET, POST');
 header("Access-Control-Allow-Headers: X-Requested-With");
 
+ini_set('display_errors', 0);
+error_reporting(E_ERROR | E_WARNING | E_PARSE);
+
 require_once('config.php');
 
-//$_REQUEST['action'] = "cekrujukan";
-//$_REQUEST['no_rkm_medis'] = "415277";
-//$_REQUEST['pengaduan_id'] = "21";
 $action = trim(isset($_REQUEST['action'])?$_REQUEST['action']:null);
 
 if($action == "signin") {
@@ -376,6 +376,13 @@ if($action == "simpanpengaduandetail") {
 }
 
 if($action == "cekrujukan") {
+
+  ini_set("default_socket_timeout","05");
+  set_time_limit(5);
+  $f=fopen(BpjsApiUrl,"r");
+  $r=fread($f,1000);
+  fclose($f);
+
   //$no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
   $no_rkm_medis = "049970";
   $check = fetch_assoc(query("SELECT no_peserta FROM pasien WHERE no_rkm_medis = '$no_rkm_medis'"));
@@ -383,47 +390,51 @@ if($action == "cekrujukan") {
 
   $noRujukan = array();
 
-  if($check['no_peserta'] !== "") {
-    date_default_timezone_set('UTC');
-    $tStamp = strval(time()-strtotime('1970-01-01 00:00:00'));
-    $signature = hash_hmac('sha256', ConsID."&".$tStamp, SecretKey, true);
-    $encodedSignature = base64_encode($signature);
-    $ch = curl_init();
-    $headers = array(
-     'X-cons-id: '.ConsID.'',
-     'X-timestamp: '.$tStamp.'' ,
-     'X-signature: '.$encodedSignature.'',
-     'Content-Type:application/json',
-    );
-    curl_setopt($ch, CURLOPT_URL, BpjsApiUrl."Rujukan/List/Peserta/".$no_peserta);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_HTTPGET, 1);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    $content = curl_exec($ch);
-    $err = curl_error($ch);
-
-    curl_close($ch);
-    //print_r($content);
-    $result = json_decode($content, true);
-    $i = 1;
-    $noRujukan = array();
-    foreach ($result['response']['rujukan'] as $key => $value) {
-      $noRujukan[] = array(
-        'noKartu' => $value['peserta']['noKartu'],
-        'noRujukan' => $value['noKunjungan'],
-        'tglKunjungan' => $value['tglKunjungan'],
-        'provPerujuk' => $value['provPerujuk']['nama'],
-        'status' => $value['peserta']['statusPeserta']['keterangan'],
-        'diagnosa' => $value['diagnosa']['kode']
+  if(strlen($r)>1) {
+    if($check['no_peserta'] !== "") {
+      date_default_timezone_set('UTC');
+      $tStamp = strval(time()-strtotime('1970-01-01 00:00:00'));
+      $signature = hash_hmac('sha256', ConsID."&".$tStamp, SecretKey, true);
+      $encodedSignature = base64_encode($signature);
+      $ch = curl_init();
+      $headers = array(
+       'X-cons-id: '.ConsID.'',
+       'X-timestamp: '.$tStamp.'' ,
+       'X-signature: '.$encodedSignature.'',
+       'Content-Type:application/json',
       );
-      if ($i++ == 3) break;
+      curl_setopt($ch, CURLOPT_URL, BpjsApiUrl."Rujukan/List/Peserta/".$no_peserta);
+      curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+      curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+      curl_setopt($ch, CURLOPT_TIMEOUT, 3);
+      curl_setopt($ch, CURLOPT_HTTPGET, 1);
+      curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+      $content = curl_exec($ch);
+      $err = curl_error($ch);
+
+      curl_close($ch);
+      //print_r($content);
+      $result = json_decode($content, true);
+      $i = 1;
+      $noRujukan = array();
+      foreach ($result['response']['rujukan'] as $key => $value) {
+        $noRujukan[] = array(
+          'noKartu' => $value['peserta']['noKartu'],
+          'noRujukan' => $value['noKunjungan'],
+          'tglKunjungan' => $value['tglKunjungan'],
+          'provPerujuk' => $value['provPerujuk']['nama'],
+          'status' => $value['peserta']['statusPeserta']['keterangan'],
+          'diagnosa' => $value['diagnosa']['kode']
+        );
+        if ($i++ == 3) break;
+      }
+      echo json_encode($noRujukan, JSON_PRETTY_PRINT);
+    } else {
+      $noRujukan['state'] = 'error';
+      echo json_encode($noRujukan, JSON_PRETTY_PRINT);
     }
-    //$noRujukan['state'] = 'found';
-    echo json_encode($noRujukan, JSON_PRETTY_PRINT);
   } else {
-    $noRujukan['state'] = 'error';
+    $noRujukan['state'] = 'offline';
     echo json_encode($noRujukan, JSON_PRETTY_PRINT);
   }
 }

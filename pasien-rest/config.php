@@ -8,8 +8,8 @@ define ("DB_PASS","");
 define ("DB_NAME","sik");
 
 define ("BpjsApiUrl","https://new-api.bpjs-kesehatan.go.id:8080/new-vclaim-rest/");
-define ("ConsID","29459");
-define ("SecretKey","7cS168C09A");
+define ("ConsID","");
+define ("SecretKey","");
 
 $connection = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
@@ -65,7 +65,6 @@ function insertTable($table_name, $insertvalue="") {
   $query = "INSERT INTO ".$table_name." (".$query1.") VALUES (".$query2.")";
   query($query);
 }
-
 
 // Get date and time
 date_default_timezone_set('Asia/Makassar');
