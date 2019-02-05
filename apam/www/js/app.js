@@ -3,7 +3,7 @@ const nama_instansi = 'RSUD H. Damanhuri'; // Hospital Name
 const apiUrl = 'http://basoro.io/APAM-Barabai/pasien-rest/'; // API Server URL
 const startDate = -1; // Start date of day for registration
 const endDate = 7; // End date of day for registration
-const debug = 1;
+const debug = 1; // Ganti menjadi 0 sebelum build di phonegap.com
 
 // Dom7
 var $$ = Dom7;
@@ -243,7 +243,7 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
       html += '     <div class="item-header">' + data[i]['tanggal_periksa'] + ' / ' + data[i]['status'] + '</div>';
       html += '     ' + data[i]['nm_poli'] + '';
       html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
-      html += '     <div class="item-footer">' + data[i]['png_jawab'] + '</div>';
+      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
       html += '    </div>';
       html += '   </div>';
       html += '  </div>';
@@ -254,6 +254,63 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
     $$(".lastbooking-list").html(html);
 
   });
+
+
+  //Getting Rujukan list
+  app.request.post(apiUrl + 'api.php', {
+    action: 'cekrujukan',
+    no_rkm_medis: no_rkm_medis
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+
+    if(data.state == "error") {
+
+      html += '<div class="card demo-facebook-card">';
+      html += '  <div class="card-header">';
+      html += '    <div class="demo-facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
+      html += '    <div class="demo-facebook-name">Bagian Pengaduan</div>';
+      html += '    <div class="demo-facebook-date">' + nama_instansi + '</div>';
+      html += '  </div>';
+      html += '  <div class="card-content card-content-padding">';
+      html += '    <p>Anda tidak terdafar sebagai peserta BPJS atau No BPJS anda tidak valid. Silahkan hubungi bagian pengaduan.</p>';
+      html += '  </div>';
+      html += '</div>';
+
+    } else {
+
+      for(i=0; i<data.length; i++) {
+
+        html += '<div class="swiper-slide">';
+        html += '  <div class="card facebook-card">';
+        html += '    <div class="card-header">';
+        html += '      <div class="facebook-avatar"><img src="img/logo-bpjs.png" width="36" height="36"/></div>';
+        html += '      <div class="facebook-name">Rujukan BPJS Kesehatan</div>';
+        html += '      <div class="facebook-date">' + data[i]['provPerujuk'] + '</div>';
+        html += '    </div>';
+        html += '    <div class="card-content card-content-padding">';
+        html += '      <div class="card-content-inner">';
+        html += '        <div>No. Peserta : ' + data[i]['noKartu'] + '</div>';
+        html += '        <div>No. Rujukan : ' + data[i]['noRujukan'] + '</div>';
+        html += '        <div>Tanggal Kunjungan : ' + data[i]['tglKunjungan'] + '</div>';
+        html += '        <div>Diagnosa : ' + data[i]['diagnosa'] + '</div>';
+        html += '        <div>Status : ' + data[i]['status'] + '</div>';
+        html += '        <img src="https://barcode.tec-it.com/barcode.ashx?data=' + data[i]['noRujukan'] + '&code=Code128&dpi=72&dataseparator">';
+        html += '      </div>';
+        html += '    </div>';
+        html += '  </div>';
+        html += '</div>';
+
+      }
+
+    }
+
+    $$("#rujukan-list").html(html);
+
+  });
+
 
 });
 
@@ -362,7 +419,7 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
 
           var html = '';
           if(data.state == "notfound") {
-            html += '<li><div class="item-content">Tidak ada jadwal dokter.</div></li>';
+            html += '<li><div class="item-content">Tidak ada jadwal dokter hari ini</div></li>';
           } else {
             for(i=0; i<data.length; i++) {
               html += '<li>';
@@ -400,7 +457,7 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
 
     var html = '';
     if(data.state == "notfound") {
-      html += '<li><div class="item-content">Tidak ada jadwal dokter.</div></li>';
+      html += '<li><div class="item-content">Tidak ada jadwal dokter hari ini</div></li>';
     } else {
       for(i=0; i<data.length; i++) {
         html += '<li>';
@@ -1028,6 +1085,7 @@ $$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
   $$('.page[data-name="pengaduandetail"] .pengaduandetail-btn').on('click', function () {
 
     var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+    //var pengaduan_id = $$('#pengaduandetail-form .message').val();
     var message = $$('#pengaduandetail-form .message').val();
     var pengaduan_id = page.route.params.id;
 
