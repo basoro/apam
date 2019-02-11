@@ -279,16 +279,14 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
         html += '    <div class="card-header">';
         html += '      <div class="facebook-avatar"><img src="img/logo-bpjs.png" width="36" height="36"/></div>';
         html += '      <div class="facebook-name">Rujukan BPJS Kesehatan</div>';
-        html += '      <div class="facebook-date">' + data[i]['provPerujuk'] + '</div>';
+        html += '      <div class="facebook-date">No. Peserta : ' + data[i]['noKartu'] + '</div>';
         html += '    </div>';
         html += '    <div class="card-content card-content-padding">';
         html += '      <div class="card-content-inner">';
-        html += '        <div>No. Peserta : ' + data[i]['noKartu'] + '</div>';
-        html += '        <div>No. Rujukan : ' + data[i]['noRujukan'] + '</div>';
         html += '        <div>Tanggal Kunjungan : ' + data[i]['tglKunjungan'] + '</div>';
         html += '        <div>Diagnosa : ' + data[i]['diagnosa'] + '</div>';
-        html += '        <div>Status : ' + data[i]['status'] + '</div>';
-        html += '        <img src="https://barcode.tec-it.com/barcode.ashx?data=' + data[i]['noRujukan'] + '&code=Code128&dpi=72&dataseparator">';
+        html += '        <div>Status : ' + data[i]['status'] + '</div><br>';
+        html += '        <img src="' + apiUrl + 'barcode.php?text=' + data[i]['noRujukan'] + '&size=48&print=true">';
         html += '      </div>';
         html += '    </div>';
         html += '  </div>';
@@ -617,7 +615,7 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
       html += '     <div class="item-header">' + data[i]['tanggal_periksa'] + ' / ' + data[i]['status'] + '</div>';
       html += '     ' + data[i]['nm_poli'] + '';
       html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
-      html += '     <div class="item-footer">' + data[i]['png_jawab'] + '</div>';
+      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
       html += '    </div>';
       html += '   </div>';
       html += '  </div>';
@@ -648,7 +646,7 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
       html += '     <div class="item-header">' + data[i]['tgl_registrasi'] + '</div>';
       html += '     ' + data[i]['nm_poli'] + '';
       html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
-      html += '     <div class="item-footer">' + data[i]['png_jawab'] + '</div>';
+      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
       html += '    </div>';
       html += '   </div>';
       html += '  </div>';
@@ -1040,11 +1038,11 @@ $$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
 
     if(data.state == "invalid") {
 
-      html += '<div class="card demo-facebook-card">';
+      html += '<div class="card facebook-card">';
       html += '  <div class="card-header">';
-      html += '    <div class="demo-facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
-      html += '    <div class="demo-facebook-name">Bagian Pengaduan</div>';
-      html += '    <div class="demo-facebook-date">' + nama_instansi + '</div>';
+      html += '    <div class="facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
+      html += '    <div class="facebook-name">Bagian Pengaduan</div>';
+      html += '    <div class="facebook-date">' + nama_instansi + '</div>';
       html += '  </div>';
       html += '  <div class="card-content card-content-padding">';
       html += '    <p>Pengaduan dengan nomor #<b>' + pengaduan_id + '</b> masih dalam proses verifikasi. Maaf atas ketidaknyamanan ini.</p>';
@@ -1055,11 +1053,11 @@ $$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
 
       for(i=0; i<data.length; i++) {
 
-        html += '<div class="card demo-facebook-card">';
+        html += '<div class="card facebook-card">';
         html += '  <div class="card-header">';
-        html += '    <div class="demo-facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
-        html += '    <div class="demo-facebook-name">' + data[i]['nama'] + '</div>';
-        html += '    <div class="demo-facebook-date">' + data[i]['date_time'] + '</div>';
+        html += '    <div class="facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
+        html += '    <div class="facebook-name">' + data[i]['nama'] + '</div>';
+        html += '    <div class="facebook-date">' + data[i]['date_time'] + '</div>';
         html += '  </div>';
         html += '  <div class="card-content card-content-padding">';
         html += '    <p>' + data[i]['message'] + '</p>';
