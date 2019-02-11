@@ -314,8 +314,15 @@ if($action == "sukses") {
 
 if($action == "pengaduan") {
   $results = array();
+  $petugas = unserialize(NORMPETUGAS);
   $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
-  $sql = "SELECT a.*, b.nm_pasien, b.jk FROM pengaduan a, pasien b WHERE a.username = '$no_rkm_medis' AND a.username = b.no_rkm_medis ORDER BY a.date_time";
+  $sql = "SELECT a.*, b.nm_pasien, b.jk FROM pengaduan a, pasien b WHERE a.username = b.no_rkm_medis";
+  if(in_array($no_rkm_medis, $petugas)) {
+    $sql .= "";
+  } else {
+   $sql .= " AND a.username = '$no_rkm_medis'";
+  }
+  $sql .= " ORDER BY a.date_time";
   $result = query($sql);
   while ($row = fetch_array($result)) {
     $results[] = $row;
@@ -384,6 +391,7 @@ if($action == "cekrujukan") {
   fclose($f);
 
   $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
+  //$no_rkm_medis = "049970";
   $check = fetch_assoc(query("SELECT no_peserta FROM pasien WHERE no_rkm_medis = '$no_rkm_medis'"));
   $no_peserta = $check['no_peserta'];
 
