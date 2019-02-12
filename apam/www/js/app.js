@@ -45,6 +45,10 @@ if (debug == '1') {
 } else {
   document.addEventListener('deviceready', appReady, false);
   function appReady(){
+    document.addEventListener("offline", onOffline, false);
+    function onOffline() {
+      window.location = "offline.html";
+    }
     if (no_rkm_medis) {
       mainView.router.navigate('/home/', {
         clearPreviousHistory: true
