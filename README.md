@@ -4,7 +4,7 @@ Aplikasi Pasien dan Antrian Mandiri
 Update Database
 ====================
 
-[code]
+<code>
 ALTER TABLE `pengaduan`
 CHANGE `date_time` `date_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP AFTER `id`;
 
@@ -22,4 +22,4 @@ ALTER TABLE `pengaduan_detail`
 ALTER TABLE `pengaduan_detail`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 COMMIT;
-[/code]
+</code>
