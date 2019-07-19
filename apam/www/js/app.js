@@ -220,7 +220,12 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
       html += '</div>';
       html += '<div class="row">';
       html += '  <div class="col">';
-      html += '      <div class="text-align-center" style="font-size:80px;font-weight:bold;text-shadow: 2px 2px 4px #000000;color:#fff;padding-top:0px;">' + data[i]['no_reg'] + '</div>';
+      html += '      <div class="text-align-center" style="font-size:50px;font-weight:bold;text-shadow: 2px 2px 4px #000000;color:#fff;padding-top:0px;">' + data[i]['no_reg'] + '</div>';
+      html += '  </div>';
+      html += '</div>';
+      html += '<div class="row">';
+      html += '  <div class="col">';
+      html += '      <div class="text-align-center" style="font-size:18px;font-weight:bold;text-shadow: 2px 2px 4px #000000;color:#fff;padding-top:px;"><img src="' + apiUrl + 'barcode.php?text=' + data[i]['no_rawat'] + '&size=40&print=true"></div>';
       html += '  </div>';
       html += '</div>';
     }

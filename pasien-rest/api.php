@@ -67,7 +67,7 @@ if($action == "notifbooking") {
 if($action == "antrian") {
   $results = array();
   $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
-  $sql = "SELECT a.tgl_registrasi, a.no_reg, a.stts, b.nm_poli, c.nm_dokter, d.png_jawab FROM reg_periksa a LEFT JOIN poliklinik b ON a.kd_poli = b.kd_poli LEFT JOIN dokter c ON a.kd_dokter = c.kd_dokter LEFT JOIN penjab d ON a.kd_pj = d.kd_pj WHERE a.no_rkm_medis = '$no_rkm_medis' AND a.tgl_registrasi = '$date' ORDER BY a.tgl_registrasi ASC LIMIT 1";
+  $sql = "SELECT a.tgl_registrasi, a.no_reg, a.stts, b.nm_poli, c.nm_dokter, d.png_jawab, a.no_rawat FROM reg_periksa a LEFT JOIN poliklinik b ON a.kd_poli = b.kd_poli LEFT JOIN dokter c ON a.kd_dokter = c.kd_dokter LEFT JOIN penjab d ON a.kd_pj = d.kd_pj WHERE a.no_rkm_medis = '$no_rkm_medis' AND a.tgl_registrasi = '$date' ORDER BY a.tgl_registrasi ASC LIMIT 1";
   $result = query($sql);
   while ($row = fetch_array($result)) {
     $results[] = $row;
