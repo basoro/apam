@@ -885,7 +885,7 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
         data = JSON.parse(data);
 
         if(data.state == "limit") {
-          app.dialog.alert('Limit pemdaftaran online telah terpenuhi. Silahkan pilih hari lain.');
+          app.dialog.alert('Limit pendaftaran online telah terpenuhi. Silahkan pilih hari lain.');
         }
         else if(data.state == "duplication") {
           app.dialog.alert('Anda sudah terdaftar ditanggal pilihan anda.');
