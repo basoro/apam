@@ -251,7 +251,7 @@ if($action == "jadwaldokter") {
 
 if($action == "carabayar") {
   $results = array();
-  $sql = "SELECT * FROM penjab WHERE png_jawab !='-'";
+  $sql = "SELECT * FROM penjab";
   $result = query($sql);
   while ($row = fetch_array($result)) {
     $results[] = $row;
@@ -267,6 +267,22 @@ if($action == "daftar") {
   $kd_poli = trim($_REQUEST['kd_poli']);
   $kd_dokter = trim($_REQUEST['kd_dokter']);
   $kd_pj = trim($_REQUEST['kd_pj']);
+
+  $tentukan_hari=date('D',strtotime($tanggal));
+  $day = array(
+    'Sun' => 'AKHAD',
+    'Mon' => 'SENIN',
+    'Tue' => 'SELASA',
+    'Wed' => 'RABU',
+    'Thu' => 'KAMIS',
+    'Fri' => 'JUMAT',
+    'Sat' => 'SABTU'
+  );
+  $hari=$day[$tentukan_hari];
+
+  $sql = "SELECT a.kd_dokter, c.nm_dokter, a.kuota FROM jadwal a, poliklinik b, dokter c WHERE a.kd_poli = b.kd_poli AND a.kd_dokter = c.kd_dokter AND a.kd_poli = '$kd_poli' AND a.hari_kerja LIKE '%$hari%'";
+
+  $result = fetch_assoc(query($sql));
 
   $check_kuota = fetch_assoc(query("SELECT COUNT(*) AS count FROM booking_registrasi WHERE kd_poli = '$kd_poli' AND tanggal_periksa = '$tanggal'"));
   $curr_count = $check_kuota['count'];
