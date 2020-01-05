@@ -268,8 +268,18 @@ if($action == "daftar") {
   $kd_dokter = trim($_REQUEST['kd_dokter']);
   $kd_pj = trim($_REQUEST['kd_pj']);
 
+  $check_kuota = fetch_assoc(query("SELECT COUNT(*) AS count FROM booking_registrasi WHERE kd_poli = '$kd_poli' AND tanggal_periksa = '$tanggal'"));
+  $curr_count = $check_kuota['count'];
+  $curr_kuota = $result['kuota'];
+  $online = $curr_kuota / LIMIT;
+
   $check = fetch_assoc(query("SELECT * FROM booking_registrasi WHERE no_rkm_medis = '$no_rkm_medis' AND tanggal_periksa = '$tanggal'"));
-  if(count($check) == 0) {
+
+  if($curr_count > $online) {
+    $send_data['state'] = 'limit';
+    echo json_encode($send_data);
+  }
+  else if(count($check) == 0) {
       $mysql_date = date( 'Y-m-d' );
       $mysql_time = date( 'H:m:s' );
       $waktu_kunjungan = $tanggal . ' ' . $mysql_time;

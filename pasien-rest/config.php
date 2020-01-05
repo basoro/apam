@@ -14,6 +14,9 @@ define ("SecretKey","");
 // No RM Petugas pengaduan
 define ("NORMPETUGAS", serialize(array('000000', '111111', '222222')));
 
+// Limit untuk kuota. Misal 1/2 (50%) dari kuota dalam jadwal
+define ("LIMIT", 1);
+
 $connection = mysqli_connect(DB_HOST, DB_USER, DB_PASS, DB_NAME);
 
 function escape($string) {

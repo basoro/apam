@@ -884,7 +884,10 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
         app.dialog.close();
         data = JSON.parse(data);
 
-        if(data.state == "duplication") {
+        if(data.state == "limit") {
+          app.dialog.alert('Limit pemdaftaran online telah terpenuhi. Silahkan pilih hari lain.');
+        }
+        else if(data.state == "duplication") {
           app.dialog.alert('Anda sudah terdaftar ditanggal pilihan anda.');
         }
         else if(data.state == "success") {
