@@ -624,7 +624,7 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail-ranap"]', function(
       html += '   <li>';
       html += '    <div class="item-content">';
       html += '     <div class="item-inner">';
-      html += '      <div class="item-title">Klinik</div>';
+      html += '      <div class="item-title">Bangsal/Kamar</div>';
       html += '      <div class="item-after">' + data[i]['nm_bangsal'] + '</div>';
       html += '     </div>';
       html += '    </div>';
