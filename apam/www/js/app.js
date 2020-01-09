@@ -1,6 +1,6 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
 const nama_instansi = 'RSUD H. Damanhuri'; // Hospital Name
-const apiUrl = 'http://basoro.io/APAM-Barabai/pasien-rest/'; // API Server URL
+const apiUrl = 'https://api.rshdbarabai.com/pasien-rest/'; // API Server URL
 const startDate = -1; // Start date of day for registration
 const endDate = 7; // End date of day for registration
 const debug = 1; // Ganti menjadi 0 sebelum build di phonegap.com
@@ -577,6 +577,104 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail"]', function(e) {
 });
 
 //=================================================//
+// Load data untuk halaman riwayat-detail.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="riwayatdetail-ranap"]', function(e) {
+
+  var page = e.detail;
+  var no_rkm_medis = page.route.params.no_rkm_medis;
+  var tgl_registrasi = page.route.params.tgl_registrasi;
+  var no_reg = page.route.params.no_reg;
+
+  //Getting History list
+  app.dialog.preloader("Loading...");
+  app.request.post(apiUrl + 'api.php', {
+    action: 'riwayatdetail-ranap',
+    no_rkm_medis: no_rkm_medis,
+    tgl_registrasi: tgl_registrasi,
+    no_reg: no_reg
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+
+      html += '<div class="block-title">Data Pendaftaran</div>';
+      html += '<div class="card">';
+      html += ' <div class="list">';
+      html += '  <ul>';
+      html += '   <li>';
+      html += '    <div class="item-content">';
+      html += '     <div class="item-inner">';
+      html += '      <div class="item-title">Nomor Rawat</div>';
+      html += '      <div class="item-after">' + data[i]['no_rawat'] + '</div>';
+      html += '     </div>';
+      html += '    </div>';
+      html += '   </li>';
+      html += '   <li>';
+      html += '    <div class="item-content">';
+      html += '     <div class="item-inner">';
+      html += '      <div class="item-title">Tanggal</div>';
+      html += '      <div class="item-after">' + data[i]['tgl_registrasi'] + '</div>';
+      html += '     </div>';
+      html += '    </div>';
+      html += '   </li>';
+      html += '   <li>';
+      html += '    <div class="item-content">';
+      html += '     <div class="item-inner">';
+      html += '      <div class="item-title">Klinik</div>';
+      html += '      <div class="item-after">' + data[i]['nm_bangsal'] + '</div>';
+      html += '     </div>';
+      html += '    </div>';
+      html += '   </li>';
+      html += '   <li>';
+      html += '    <div class="item-content">';
+      html += '     <div class="item-inner">';
+      html += '      <div class="item-title">Dokter</div>';
+      html += '      <div class="item-after">' + data[i]['nm_dokter'] + '</div>';
+      html += '     </div>';
+      html += '    </div>';
+      html += '   </li>';
+      html += '   <li>';
+      html += '    <div class="item-content">';
+      html += '     <div class="item-inner">';
+      html += '      <div class="item-title">Cara Bayar</div>';
+      html += '      <div class="item-after">' + data[i]['png_jawab'] + '</div>';
+      html += '     </div>';
+      html += '    </div>';
+      html += '   </li>';
+      html += '  </ul>';
+      html += ' </div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Pemeriksaan</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content">Keluhan: ' + data[i]['keluhan'] + '</div>';
+      html += '  <div class="card-content">Pemeriksaan: ' + data[i]['pemeriksaan'] + '</div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Diagnosa</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content">' + data[i]['nm_penyakit'] + '</div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Resep Obat</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content">' + data[i]['nama_brng'] + '</div>';
+      html += '</div>';
+
+    }
+
+    $$(".riwayat-detail-ranap").html(html);
+
+  });
+
+});
+
+
+//=================================================//
   // Load data untuk halaman profil.html               //
 //=================================================//
 
@@ -664,6 +762,35 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
     }
 
     $$(".riwayat-list").html(html);
+
+  });
+
+  app.request.post(apiUrl + 'api.php', {
+    action: 'riwayat-ranap',
+    no_rkm_medis: no_rkm_medis
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<li>';
+      html += ' <a href="/riwayat-ranap/' + no_rkm_medis + '/' + data[i]['tgl_registrasi'] + '/' + data[i]['no_reg'] + '/" class="item-link item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title-row">';
+      html += '    <div class="item-title">';
+      html += '     <div class="item-header">' + data[i]['tgl_registrasi'] + '</div>';
+      html += '     ' + data[i]['nm_bangsal'] + '';
+      html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
+      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
+      html += '    </div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </a>';
+      html += '</li>';
+    }
+
+    $$(".riwayat-ranap-list").html(html);
 
   });
 

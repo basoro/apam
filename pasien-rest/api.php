@@ -187,6 +187,55 @@ if($action == "riwayatdetail") {
   echo json_encode($results);
 }
 
+if($action == "riwayat-ranap") {
+  $results = array();
+  $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
+  $sql = "SELECT reg_periksa.tgl_registrasi, reg_periksa.no_reg, dokter.nm_dokter, bangsal.nm_bangsal, penjab.png_jawab, reg_periksa.no_rawat FROM kamar_inap, reg_periksa, pasien, bangsal, kamar, penjab, dokter, dpjp_ranap WHERE kamar_inap.no_rawat = reg_periksa.no_rawat AND reg_periksa.no_rkm_medis = pasien.no_rkm_medis AND kamar_inap.no_rawat = reg_periksa.no_rawat AND kamar_inap.kd_kamar = kamar.kd_kamar AND kamar.kd_bangsal = bangsal.kd_bangsal AND reg_periksa.kd_pj = penjab.kd_pj AND dpjp_ranap.no_rawat = reg_periksa.no_rawat AND dpjp_ranap.kd_dokter = dokter.kd_dokter AND pasien.no_rkm_medis = '$no_rkm_medis' ORDER BY reg_periksa.tgl_registrasi DESC";
+  $result = query($sql);
+  while ($row = fetch_array($result)) {
+    $results[] = $row;
+  }
+  echo json_encode($results);
+}
+
+if($action == "riwayatdetail-ranap") {
+  $results = array();
+  $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);
+  $tgl_registrasi = trim($_REQUEST['tgl_registrasi']);
+  $no_reg = trim($_REQUEST['no_reg']);
+  $sql = "SELECT
+      a.tgl_registrasi,
+      a.no_rawat,
+      a.no_reg,
+      b.nm_bangsal,
+      c.nm_dokter,
+      d.png_jawab,
+      GROUP_CONCAT(DISTINCT e.keluhan SEPARATOR '<br>') AS keluhan,
+      GROUP_CONCAT(DISTINCT e.pemeriksaan SEPARATOR '<br>') AS pemeriksaan,
+      GROUP_CONCAT(DISTINCT g.nm_penyakit SEPARATOR '<br>') AS nm_penyakit,
+      GROUP_CONCAT(DISTINCT i.nama_brng SEPARATOR '<br>') AS nama_brng
+    FROM reg_periksa a
+    LEFT JOIN kamar_inap j ON a.no_rawat = j.no_rawat
+    LEFT JOIN kamar k ON j.kd_kamar = k.kd_kamar
+    LEFT JOIN bangsal b ON k.kd_bangsal = b.kd_bangsal
+    LEFT JOIN dokter c ON a.kd_dokter = c.kd_dokter
+    LEFT JOIN penjab d ON a.kd_pj = d.kd_pj
+    LEFT JOIN pemeriksaan_ranap e ON a.no_rawat = e.no_rawat
+    LEFT JOIN diagnosa_pasien f ON a.no_rawat = f.no_rawat
+    LEFT JOIN penyakit g ON f.kd_penyakit = g.kd_penyakit
+    LEFT JOIN detail_pemberian_obat h ON a.no_rawat = h.no_rawat
+    LEFT JOIN databarang i ON h.kode_brng = i.kode_brng
+    WHERE a.no_rkm_medis = '$no_rkm_medis'
+    AND a.tgl_registrasi = '$tgl_registrasi'
+    AND a.no_reg = '$no_reg'
+    GROUP BY a.no_rawat";
+  $result = query($sql);
+  while ($row = fetch_array($result)) {
+    $results[] = $row;
+  }
+  echo json_encode($results);
+}
+
 if($action == "profil") {
   $results = array();
   $no_rkm_medis = trim($_REQUEST['no_rkm_medis']);

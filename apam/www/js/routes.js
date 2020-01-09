@@ -44,6 +44,10 @@ routes = [
     url: './pages/riwayat-detail.html',
   },
   {
+    path: '/riwayat-ranap/:no_rkm_medis/:tgl_registrasi/:no_reg/',
+    url: './pages/riwayat-detail-ranap.html',
+  },
+  {
     path: '/bantuan/',
     url: './pages/bantuan.html',
   },
