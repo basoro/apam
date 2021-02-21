@@ -1,8 +1,8 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
-const nama_instansi = 'RS Aura Syifa'; // Hospital Name
-const apiUrl = 'http://192.168.100.56/Khanza-Lite/api/'; // API Server URL
-const website_upload = 'http://192.168.100.56/Khanza-Lite/uploads/'; // API Server URL
-const token = 'jokowi'; // Token code for security purpose
+const nama_instansi = 'RS Masa Kini'; // Hospital Name
+const apiUrl = 'http://localhost/Khanza-Lite/api/'; // API Server URL
+const website_upload = 'http://localhost/Khanza-Lite/uploads/'; // API Server URL
+const token = 'qtbexUAxzqO3M8dCOo2vDMFvgYjdUEdMLVo341'; // Token code for security purpose
 const startDate = -1; // Start date of day for registration
 const endDate = 7; // End date of day for registration
 const debug = 1; // Ganti menjadi 0 sebelum build di phonegap.com
