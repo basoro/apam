@@ -1,29 +1,31 @@
 <div class="page" data-name="profil">
-  <!-- Top Navbar -->
-  <div class="navbar">
-    <div class="navbar-inner">
+  <div class="navbar navbar-style-1">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
       <div class="left">
         <a href="#" class="link back">
           <i class="icon icon-back"></i>
-          <span class="ios-only">Back</span>
+          <span class="if-not-md">Back</span>
         </a>
       </div>
-      <div class="title sliding">
-        Account
-      </div>
+      <div class="title">Profile</div>
     </div>
   </div>
-  <div class="toolbar tabbar">
+  <div class="toolbar tabbar toolbar-bottom">
     <div class="toolbar-inner">
-      <a href="#tab-1" class="tab-link tab-link-active">Details</a>
-      <a href="#tab-2" class="tab-link">Booking</a>
-      <a href="#tab-3" class="tab-link">Ralan</a>
-      <a href="#tab-4" class="tab-link">Ranap</a>
+      <a href="#tab-1" class="tab-link tab-link-active"><i class="fa fa-user-o"></i>v-Card</a>
+      <a href="#tab-2" class="tab-link"><i class="fa fa-address-book-o"></i>Booking</a>
+      <a href="#tab-3" class="tab-link"><i class="fa fa-file"></i>Records</a>
+      <a href="#tab-4" class="tab-link"><i class="fa fa-file-text-o"></i>Billing</a>
     </div>
   </div>
   <div class="tabs-animated-wrap">
     <div class="tabs">
       <div id="tab-1" class="page-content tab tab-active">
+        <h2 class="block-title text-align-center">Kartu Berobat Virtual</h2>
+        <div class="mb-30 text-align-center">
+					<div id="qrKartuVirtual"></div>
+				</div>
         <div class="block-title">Informasi Pribadi</div>
         <div class="card">
           <div class="list">
@@ -71,61 +73,25 @@
             </ul>
           </div>
         </div>
-
-        <div class="block-title">Pengaturan</div>
-        <div class="card">
-          <div class="list simple-list">
-            <ul>
-              <li>
-                <span>Tampilan Gelap</span>
-                <label class="toggle toggle-init color-blue">
-                  <input type="checkbox" name="layout" value="theme-dark">
-                  <span class="toggle-icon"></span>
-                </label>
-              </li>
-              <li>
-                <span>Warna Tema</span>
-                <a class="item-link smart-select smart-select-init" data-open-in="page" data-close-on-select="true">
-                  <select id="color" name="color">
-                    <option value="color-theme-blue">Biru</option>
-                    <option value="color-theme-red">Merah</option>
-                    <option value="color-theme-green">Hijau</option>
-                    <option value="color-theme-pink">Pink</option>
-                    <option value="color-theme-orange">Oranye</option>
-                  </select>
-                  <div class="item-content">
-                    <div class="item-inner">
-                      <div class="item-title">Pilih Warna </div>
-                    </div>
-                  </div>
-                </a>
-              </li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="block padding-top">
-          <button class="button button-big color-red logout-btn">Logout</button>
-        </div>
       </div>
       <div id="tab-2" class="page-content tab">
-        <div class="block-title">Riwayat Booking Pendaftaran</div>
+        <div class="block-title">Riwayat Booking</div>
         <div class="list">
           <ul class="booking-list">
           </ul>
         </div>
       </div>
       <div id="tab-3" class="page-content tab">
-        <div class="block-title">Riwayat Rawat Jalan</div>
+        <div class="block-title">Riwayat Kunjungan</div>
         <div class="list">
           <ul class="riwayat-list">
           </ul>
         </div>
       </div>
       <div id="tab-4" class="page-content tab">
-        <div class="block-title">Riwayat Rawat Inap</div>
+        <div class="block-title">Riwayat Pembayaran</div>
         <div class="list">
-          <ul class="riwayat-ranap-list">
+          <ul class="billing-list">
           </ul>
         </div>
       </div>

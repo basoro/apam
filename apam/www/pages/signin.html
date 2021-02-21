@@ -1,42 +1,112 @@
 <div class="page" data-name="signin">
-  <div class="page-content login-screen-content">
-    <div class="block">
-      <img src="img/logo-app.png" alt="logo image" class="logo" align="center">
-    </div>
+  <div class="page-content account-area">
+    <div class="logo">
+			<img src="img/logo.png" alt=""/>
+		</div>
     <div class="login-screen-title nama-instansi" style="font-size:24px !important;"></div>
-    <div class="block-footer">Silahkan isikan nomor kartu berobat dan nomor KTP anda. Jika mengalami kesulitan silahkan hubungi petugas pengaduan di lobby Rumah Sakit.</div>
-    <form class="list" id="signin-form">
-      <ul>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Nomor Rekam Medik</div>
-              <div class="item-input-wrap">
-                <input type="text" class="no_rkm_medis" placeholder="No. Kartu">
-              </div>
+    <div class="tabs-swipeable-wrap">
+			<div class="tabs ">
+				<div id="tab-1" class="tab tab-active form-elements tabs tabs-animated-wrap">
+					<div class="block tab tab-active" id="tabA1" >
+            <h5 class="dz-title text-align-center">Silahkan login dengan mengisikan nomor kartu berobat dan nomor KTP anda sebagai kata kunci. Jika mengalami kesulitan silahkan hubungi petugas di Rumah Sakit.</h5>
+            <div class="list" id="signin-form">
+              <ul>
+                <li class="item-content item-input item-input-with-value">
+                  <div class="item-inner">
+                    <div class="item-input-wrap">
+                      <input type="text" placeholder="Nomor Rekam Medik" id="no_rkm_medis" class="form-control text-align-center no_rkm_medis"/>
+                    </div>
+                  </div>
+                </li>
+                <li class="item-content item-input">
+                  <div class="item-inner">
+                    <div class="item-input-wrap text-align-center">
+                      <input type="password" placeholder="Kata Kunci" id="password" class="form-control text-align-center no_ktp"/>
+                    </div>
+                  </div>
+                </li>
+              </ul>
             </div>
-          </div>
-        </li>
-        <li>
-          <div class="item-content item-input">
-            <div class="item-inner">
-              <div class="item-title item-label">Nomor Induk Kependudukan</div>
-              <div class="item-input-wrap">
-                <input type="password" class="no_ktp" placeholder="No. KTP" id="password">
-                <div style="display:inline;float:right;position:relative;top:-25px;" onclick="if (password.type == 'text') { password.type = 'password'; eye.src='img/melek.png'; } else { password.type = 'text'; eye.src='img/merem.png'; }"><img src="img/melek.png" id="eye"></div>
-              </div>
+            <div class="list">
+              <ul>
+                <li><button class="button-large button button-fill signin-btn">SIGN IN</button></li>
+              </ul>
             </div>
+            <!--
+            <div class="list">
+              <p class="text-align-center">Lupa kata kunci? <a href="#tabA3"  data-route-tab-id="tabA3" class="fw6 tab-link">Atur ulang</a></p>
+            </div>
+            <div class="list">
+							<a href="#tabA2"  data-route-tab-id="tabA2" class="button-large button button-outline tab-link">BUAT AKUN BARU</a>
+						</div>
+            -->
           </div>
-        </li>
-      </ul>
-    </form>
-
-    <div class="block">
-      <p class="row">
-        <a class="col button button-big back" href="#">Batal</a>
-        <button class="col button button-big button-fill signin-btn">Sign in</button>
-      </p>
+          <div class="block tab" id="tabA2">
+						<h3 class="dz-title">Mendaftar sebagai pasien baru</h3>
+						<div class="list">
+							<ul>
+                <li class="item-content item-input item-input-with-value">
+									<div class="item-inner">
+										<div class="item-input-wrap">
+											<input type="text" placeholder="Nama Lengkap" id="nama_lengkap" class="form-control"/>
+										</div>
+									</div>
+								</li>
+								<li class="item-content item-input item-input-with-value">
+									<div class="item-inner">
+										<div class="item-input-wrap">
+											<input type="email" placeholder="Alamat Email" id="email" class="form-control"/>
+										</div>
+									</div>
+								</li>
+								<li class="item-content item-input">
+									<div class="item-inner">
+										<div class="item-input-wrap">
+											<input type="text" placeholder="Nomor Telepon" id="nomor_telepon" class="form-control"/>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="list">
+							<ul>
+								<li><button type="button" class="button-large button button-fill" @click="home">SUBMIT</button></li>
+							</ul>
+						</div>
+						<div class="list">
+							<p class="text-align-center">Lupa kata kunci? <a href="#tabA3"  data-route-tab-id="tabA3" class="fw6 tab-link">Atur ulang</a></p>
+							<div class="social-account">
+								<p class="fs-14 fw3 text-align-center">Sudah terdaftar sebagai pasien</p>
+							</div>
+						</div>
+						<div class="list">
+							<a href="#tabA1"  data-route-tab-id="tabA1" class="button-large button button-outline tab-link">SIGN IN</a>
+						</div>
+					</div>
+					<div class="block tab" id="tabA3">
+						<h3 class="dz-title">Lupa Kata Kunci</h3>
+						<div class="list">
+							<ul>
+								<li class="item-content item-input item-input-with-value">
+									<div class="item-inner">
+										<div class="item-input-wrap">
+											<input type="email" placeholder="Alamat Email" id="demo-username-25" class="form-control"/>
+										</div>
+									</div>
+								</li>
+							</ul>
+						</div>
+						<div class="list">
+							<ul>
+								<li><a href="/home/" class="button-large button button-fill">SUBMIT</a></li>
+							</ul>
+						</div>
+						<div class="list">
+							<p>Masuk ke akun anda. <a href="#tabA1"  data-route-tab-id="tabA1" class="fw6 tab-link">Login disini</a></p>
+						</div>
+					</div>
+        </div>
+      </div>
     </div>
-
   </div>
 </div>

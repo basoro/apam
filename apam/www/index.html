@@ -1,70 +1,131 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="">
 <head>
-  <meta charset="utf-8">
-  <meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap: content:">
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui, viewport-fit=cover">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
-  <meta name="theme-color" content="#2196f3">
-  <meta name="format-detection" content="telephone=no">
-  <meta name="msapplication-tap-highlight" content="no">
-  <title>APAM Barabai</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+	<meta name="theme-color" content="#9237e3">
+	<meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap:">
+	<title>APAM App</title>
 
-  <link rel="stylesheet" href="framework7/css/framework7.min.css">
-  <link rel="stylesheet" href="css/icons.css">
-  <link rel="stylesheet" href="css/app.css">
-  <script>
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-    ga('create', 'UA-129522560-1', {'storage':'none', 'clientId': localStorage.getItem('gaClientId')});
-    ga('set', 'checkProtocolTask', null);
-    ga(function(t){ localStorage.setItem('gaClientId', t.get('clientId')); });
-    ga('send', 'pageview' , {'location' : 'http://api.rshdbarabai.com/pasien-rest/index.html' });
-  </script>
+	<link rel="stylesheet" href="css/framework7.bundle.min.css">
+	<link rel="stylesheet" href="css/app.css">
+
+	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+	<link rel="stylesheet" href="css/line-awesome/css/line-awesome.min.css">
+
+	<link rel="stylesheet" href="css/style.css">
+
+
+	<link rel="apple-touch-icon" href="img/logo.png">
+	<link rel="icon" href="img/logo.png">
+
+
+	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
 </head>
-<body>
+<body class="">
   <div id="app">
-    <!-- Status bar overlay for fullscreen mode-->
-    <div class="statusbar"></div>
-    <!-- Your main view, should have "view-main" class -->
-    <div class="view view-main ios-edges">
-      <!-- Page, data-name contains page name which can be used in callbacks -->
-      <div class="page" data-name="landing">
-        <!-- Scrollable page content-->
-        <div class="page-content login-screen-content">
-          <div class="block">
-            <img src="img/logo-app.png" alt="logo image" class="logo" align="center">
-            <div class="login-screen-title" style="font-size:24px !important;margin-bottom:0 !important;">APAM Barabai</div>
-            <p align="center">Aplikasi Pasien dan Antrian Mandiri</p>
-          </div>
+    <div class="panel panel-left panel-reveal panel-resizable panel-init sidebar-left">
+		<div class="page" data-name="landing">
+			<div class="page-content">
 
-          <div class="block button-wrapper">
-            <p class="row">
-              <a class="col button button-big button-fill" href="/signin/">Sign in</a>
-            </p>
-            <p class="row">
-              <a class="col button button-big button-fill" href="/panduan/">Panduan</a>
-            </p>
-          </div>
-
-        </div>
-      </div>
+				<div class="sidebar-logo">
+					<a href="/home/"><img src="img/logo-2.png" alt=""/></a>
+					<a href="/home/" class="panel-close">&times;</a>
+				</div>
+				<!-- <a href="#" data-panel="right" class="panel-open">Right Panel</a> -->
+				<div class="nav-bar">
+					<ul>
+						<li class="active"><a href="/home/"><i class="fa fa-home"></i>Home</a></li>
+						<li><a href="/notifikasi/"><i class="fa fa-bell"></i>Notifikasi (<span class="notifikasi"></span>)</a></li>
+						<li><a href="/pengaduan/"><i class="fa fa-envelope"></i>Pengaduan</a></li>
+						<li><a href="/profil/"><i class="fa fa-user-circle"></i>Profile</a></li>
+						<li><a href="/panduan/"><i class="fa fa-question-circle"></i>Panduan</a></li>
+						<li><a href="/pengaturan/"><i class="fa fa-cog"></i>Settings</a></li>
+						<li><a href="" class="logout-btn"><i class="fa fa-sign-out"></i>Logout</a></li>
+					</ul>
+				</div>
+				<div class="sidebar-footer">
+					<h5 class="name"><a href="/about/">APAM</a></h5>
+					<p>Version 3.0.0</p>
+				</div>
+			</div>
+		</div>
     </div>
+    <div class="view  view-main view-init safe-areas" data-master-detail-breakpoint="800" data-url="/">
+		<div class="row no-gutters vh-100 loader-screen">
+			<div class="col align-self-center text-white text-align-center">
+				<img src="img/logo-splash.png" alt="logo">
+				<div class="laoderhorizontal">
+					<div></div>
+					<div></div>
+					<div></div>
+					<div></div>
+				</div>
+			</div>
+		</div>
+		<div class="page page-onboading" data-name="home">
+			<div class="page-content pb-100">
+				<div class="onboading-logo">
+					<img src="img/logo-welcome.png" alt=""/>
+				</div>
+				<div class="my-auto">
+					<div data-pagination='{"el": ".swiper-pagination", "hideOnClick": true}' class="swiper-container swiper-init swiper-container-initialized swiper-container-horizontal get-started">
+						<div class="swiper-wrapper">
+							<div class="swiper-slide">
+								<div class="row">
+									<div class="color-white col-100">
+										<img src="img/job-slide1.png" alt="" class="orange-slice right-image align-self-center">
+										<h1 class="text-uppercase dz-title">Informasi Rumah Sakit</h1>
+										<p>Dapatkan informasi tentang layanan, tarif, ketersediaan kamar dan jadwal dokter </p>
+									</div>
+								</div>
+							</div>
+							<div class="swiper-slide">
+								<div class="row">
+									<div class="color-white col-100">
+										<img src="img/job-slide2.png" alt="" class="orange-slice right-image align-self-center">
+										<h1 class="text-uppercase dz-title">Pendaftaran Mandiri</h1>
+										<p>Anda sibuk? Atau malas antri? Silahkan lakukan pendaftaran mandiri klinik rawat jalan </p>
+									</div>
+								</div>
+							</div>
+							<div class="swiper-slide">
+								<div class="row">
+									<div class="color-white col-100">
+										<img src="img/job-slide3.png" alt="" class="orange-slice right-image align-self-center">
+										<h1 class="text-uppercase dz-title">Biaya & Catatan Medis</h1>
+										<p>Telusuri catatan medis anda beserta besaran biaya layanan di Rumah Sakit </p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="swiper-pagination"></div>
+					</div>
+			</div>
+			<a href="/panduan/" class="link icon-only text-align-center">
+				<i class="icon f7-icons if-not-md" style="font-size:30px;">question_circle_fill
+				</i>
+				<i class="icon material-icons md-only" style="font-size:30px;">help
+				</i>
+				 Panduan
+			</a>
+		</div>
+			<div class="toolbar toolbar-bottom footer-button padding">
+				<div class="col-50">
+					<a href="/signin/" class="button-large button button-fill">Lewati Saja</a>
+				</div>
+			</div>
+		</div>
+	</div>
   </div>
-  <!-- Cordova -->
-  <script src="cordova.js"></script>
-
-  <!-- Framework7 library -->
-  <script src="framework7/js/framework7.min.js"></script>
-
-  <!-- App routes -->
+  <script src="js/framework7.bundle.min.js"></script>
+  <script src="js/framework7.debug.js"></script>
+	<script src="js/qrcode.js"></script>
   <script src="js/routes.js"></script>
-
-  <!-- Your custom app scripts -->
   <script src="js/app.js"></script>
 </body>
 </html>

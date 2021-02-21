@@ -1,12 +1,20 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
-const nama_instansi = 'RSUD H. Damanhuri'; // Hospital Name
-const apiUrl = 'http://basoro.io/webapps/pasien-rest/'; // API Server URL
+const nama_instansi = 'RS Aura Syifa'; // Hospital Name
+const apiUrl = 'http://192.168.100.56/Khanza-Lite/api/'; // API Server URL
+const website_upload = 'http://192.168.100.56/Khanza-Lite/uploads/'; // API Server URL
+const token = 'jokowi'; // Token code for security purpose
 const startDate = -1; // Start date of day for registration
 const endDate = 7; // End date of day for registration
 const debug = 1; // Ganti menjadi 0 sebelum build di phonegap.com
 
 // Dom7
 var $$ = Dom7;
+
+// Theme
+var theme = 'auto';
+if (document.location.search.indexOf('theme=') >= 0) {
+  theme = document.location.search.split('theme=')[1].split('&')[0];
+}
 
 // Framework7 App main instance
 var app  = new Framework7({
@@ -21,9 +29,41 @@ var app  = new Framework7({
   statusbar: {
     iosOverlaysWebview: true,
   },
-  theme: 'auto', // Automatic theme detection
+  theme: theme,
+  debugger: false,
+  cache: false,
+  routes: routes,
+  popup: {
+    closeOnEscape: true,
+  },
+  sheet: {
+    closeOnEscape: true,
+	//closeByBackdropClick: true,
+  },
+  popover: {
+    closeOnEscape: true,
+  },
+  actions: {
+    closeOnEscape: true,
+  },
+  vi: {
+    placementId: 'pltd4o7ibb9rc653x14',
+  },
   // App routes
   routes: routes,
+});
+
+setTimeout(function () {
+    $$('.loader-screen').hide();
+}, 2000);
+
+// Option 1. Using one 'page:init' handler for all pages
+$$(document).on('page:init', function (e) {
+  app.panel.close();
+});
+
+app.on('orientationchange', function (e) {
+  app.off(e);
 });
 
 // Init/Create main view
@@ -35,6 +75,7 @@ var mainView = app.views.create('.view-main', {
 var no_rkm_medis = localStorage.getItem("no_rkm_medis");
 var layout = localStorage.getItem("layout");
 var color = localStorage.getItem("color");
+
 
 if (debug == '1') {
   if (no_rkm_medis) {
@@ -84,59 +125,77 @@ if (debug == '1') {
   }
 }
 
-var notifbooking = setInterval(function () {
-  app.request.post(apiUrl + 'api.php', {
-    action: 'notifbooking',
-    no_rkm_medis: no_rkm_medis
-  }, function (data) {
-    data = JSON.parse(data);
-    if(data.state == "notifbooking") {
-      stts = data.stts;
-      var today = new Date().toISOString().slice(0,10);
-      app.notification.create({
-        icon: '<i class="icon demo-icon color-red">!</i>',
-        title: 'Pemberitahuan',
-        titleRightText: 'saat ini',
-        subtitle: 'RSUD H. Damanhuri',
-        text: 'Pendaftaran tanggal '+ today +' berstatus <b>'+ stts +'</b>. Silahkan lihat data booking untuk detail dan tangkapan layar bukti daftar.',
-        closeButton: true,
-        closeOnClick: true,
-        on: {
-          close: function () {
-          },
-        },
-      }).open();
-    }
-  });
-  clearInterval(notifbooking);
-}, 3000);
+if(no_rkm_medis) {
 
-var notifberkas = setInterval(function () {
-  app.request.post(apiUrl + 'api.php', {
-    action: 'notifbooking',
-    no_rkm_medis: no_rkm_medis
-  }, function (data) {
-    data = JSON.parse(data);
-    if(data.state == "notifberkas") {
-      stts = data.stts;
-      var today = new Date().toISOString().slice(0,10);
-      app.notification.create({
-        icon: '<i class="icon demo-icon color-red">!</i>',
-        title: 'Pemberitahuan',
-        titleRightText: 'saat ini',
-        subtitle: 'RSUD H. Damanhuri',
-        text: '<b>'+ stts +'</b>. Silahkan menuju ke Klinik pilihan anda di RSUD H. Damanhuri untuk mendapatkan layanan prioritas tanpa harus antri di loket pendaftaran.',
-        closeButton: true,
-        closeOnClick: true,
-        on: {
-          close: function () {
+  var notifbooking = setInterval(function () {
+    app.request.post(apiUrl + 'apam/', {
+      action: 'notifbooking',
+      no_rkm_medis: no_rkm_medis,
+      token: token
+    }, function (data) {
+      data = JSON.parse(data);
+      if(data.state == "valid") {
+        stts = data.stts;
+        var today = new Date().toISOString().slice(0,10);
+        app.notification.create({
+          icon: '<i class="icon material-icons md-only color-red">priority_high</i>',
+          title: 'Notifikasi',
+          titleRightText: 'saat ini',
+          subtitle: nama_instansi,
+          text: 'Pendaftaran tanggal '+ today +' berstatus <b>'+ stts +'</b>. Silahkan lihat data booking untuk detail dan tangkapan layar bukti daftar.',
+          closeButton: true,
+          closeOnClick: true,
+          on: {
+            close: function () {
+            },
           },
-        },
-      }).open();
-    }
+        }).open();
+      }
+    });
+    clearInterval(notifbooking);
+  }, 10000);
+
+  var notifberkas = setInterval(function () {
+    app.request.post(apiUrl + 'apam/', {
+      action: 'notifbooking',
+      no_rkm_medis: no_rkm_medis,
+      token: token
+    }, function (data) {
+      data = JSON.parse(data);
+      if(data.state == "notifberkas") {
+        stts = data.stts;
+        var today = new Date().toISOString().slice(0,10);
+        app.notification.create({
+          icon: '<i class="icon material-icons md-only color-red">priority_high</i>',
+          title: 'Pemberitahuan',
+          titleRightText: 'saat ini',
+          subtitle: nama_instansi,
+          text: '<b>'+ stts +'</b>. Silahkan menuju ke Klinik pilihan anda di ' + nama_instansi + ' untuk mendapatkan layanan prioritas tanpa harus antri di loket pendaftaran.',
+          closeButton: true,
+          closeOnClick: true,
+          on: {
+            close: function () {
+            },
+          },
+        }).open();
+      }
+    });
+    clearInterval(notifberkas);
+  }, 10000);
+
+}
+
+$$('.logout-btn').on('click', function () {
+  app.dialog.confirm('Anda yakin ingin signout?', function () {
+    app.dialog.alert('Anda telah keluar sepenuhnya dari sistem!');
+    localStorage.removeItem("no_rkm_medis");
+    //localStorage.removeItem("layout");
+    //localStorage.removeItem("color");
+    mainView.router.navigate('/', {
+      clearPreviousHistory: true
+    });
   });
-  clearInterval(notifberkas);
-}, 3000);
+});
 
 //=================================================//
 // Load data untuk halaman signin.html               //
@@ -159,10 +218,11 @@ $$(document).on('page:init', '.page[data-name="signin"]', function(e) {
     else {
       // Show Preloader
       app.dialog.preloader("Menghubungkan ke server...");
-      app.request.post(apiUrl + 'api.php', {
+      app.request.post(apiUrl + 'apam/', {
         action: 'signin',
         no_rkm_medis: no_rkm_medis,
-        no_ktp: no_ktp
+        no_ktp: no_ktp,
+        token: token
       }, function (data) {
         app.dialog.close();
         data = JSON.parse(data);
@@ -198,12 +258,184 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
 
   app.dialog.preloader('Loading...');
 
-  //Getting Booking Result
-  app.request.post(apiUrl + 'api.php', {
-    action: 'antrian',
-    no_rkm_medis: no_rkm_medis
+  if (no_rkm_medis) {
+
+    app.request.post(apiUrl + 'apam/', {
+      action: "profil",
+      no_rkm_medis: no_rkm_medis,
+      token: token
+    }, function (data) {
+      //console.log(data);
+      //app.dialog.close();
+      data = JSON.parse(data);
+
+      $$('.nm_pasien').text(data['nm_pasien']);
+      document.getElementById("foto").src = data['foto'];
+
+    });
+
+    var notifikasi = setInterval(function () {
+      app.request.post(apiUrl + 'apam/', {
+        action: 'notifikasi',
+        no_rkm_medis: no_rkm_medis,
+        token: token
+      }, function (data) {
+        data = JSON.parse(data);
+        $$('.notifikasi').text(data.length);
+        for(i=0; i<data.length; i++) {
+          if(data[i].state == 'valid') {
+            app.notification.create({
+              icon: '<i class="icon material-icons md-only color-red">priority_high</i>',
+              title: 'Notifikasi',
+              titleRightText: data[i].status,
+              subtitle: data[i].judul,
+              text: data[i].pesan,
+              closeButton: true,
+              closeOnClick: true,
+              on: {
+                close: function () {
+                  //app.dialog.alert('Notification closed');
+                  //mainView.router.navigate('/notifikasi/');
+                  app.request.post(apiUrl + 'apam/', {
+                    action: 'tandaisudahdibacasemua',
+                    no_rkm_medis: no_rkm_medis,
+                    token: token
+                  }, function (data) {
+                    //app.dialog.alert('Notifikasi ' + judul + ' sudah dibaca..!');
+                  });
+                },
+              },
+            }).open();
+          }
+        }
+      });
+      //clearInterval(notifikasi);
+    }, 3000);
+
+    var notifikasi = setInterval(function () {
+      app.request.post(apiUrl + 'apam/', {
+        action: 'hitungralan',
+        no_rkm_medis: no_rkm_medis,
+        token: token
+      }, function (data) {
+        $$('.hitungralan').text(data);
+      });
+      //clearInterval(notifikasi);
+    }, 3000);
+
+    var notifikasi = setInterval(function () {
+      app.request.post(apiUrl + 'apam/', {
+        action: 'hitungranap',
+        no_rkm_medis: no_rkm_medis,
+        token: token
+      }, function (data) {
+        $$('.hitungranap').text(data);
+      });
+      //clearInterval(notifikasi);
+    }, 3000);
+
+  }
+
+  app.request.post(apiUrl + 'apam/', {
+    action: 'layananunggulan',
+    token: token
   }, function (data) {
-    //app.dialog.close();
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+
+      $$('.services_11').text(data[i]['services_11']);
+      $$('.services_12').text(data[i]['services_12']);
+      document.getElementById("services_13").src = website_upload + '' + data[i]['services_13'];
+      $$('.services_14').text(data[i]['services_14']);
+
+      $$('.services_21').text(data[i]['services_21']);
+      $$('.services_22').text(data[i]['services_22']);
+      document.getElementById("services_23").src = website_upload + '' + data[i]['services_23'];
+      $$('.services_24').text(data[i]['services_24']);
+
+      $$('.services_31').text(data[i]['services_31']);
+      $$('.services_32').text(data[i]['services_32']);
+      document.getElementById("services_33").src = website_upload + '' + data[i]['services_33'];
+      $$('.services_34').text(data[i]['services_34']);
+
+      $$('.services_41').text(data[i]['services_41']);
+      $$('.services_42').text(data[i]['services_42']);
+      document.getElementById("services_43").src = website_upload + '' + data[i]['services_43'];
+      $$('.services_44').text(data[i]['services_44']);
+
+      $$('.services_51').text(data[i]['services_51']);
+      $$('.services_52').text(data[i]['services_52']);
+      document.getElementById("services_53").src = website_upload + '' + data[i]['services_53'];
+      $$('.services_54').text(data[i]['services_54']);
+
+      $$('.services_61').text(data[i]['services_61']);
+      $$('.services_62').text(data[i]['services_62']);
+      document.getElementById("services_63").src = website_upload + '' + data[i]['services_63'];
+      $$('.services_64').text(data[i]['services_64']);
+
+    }
+
+  });
+
+  //Getting Booking list
+  app.request.post(apiUrl + 'apam/', {
+    action: 'lastblog',
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      /*html += '<li>';
+      html += ' <a href="/booking/' + no_rkm_medis + '/' + data[i]['tanggal_periksa'] + '/' + data[i]['no_reg'] + '/" class="item-link item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title-row">';
+      html += '    <div class="item-title">';
+      html += '     <div class="item-header">' + data[i]['tanggal_periksa'] + ' / ' + data[i]['status'] + '</div>';
+      html += '     ' + data[i]['nm_poli'] + '';
+      html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
+      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
+      html += '    </div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </a>';
+      html += '</li>';*/
+
+      html += '<li>';
+      html += '  <div class="item-content">';
+      html += '    <div class="item-media"><img src="' + website_upload + '/blog/' + data[i]['cover_photo'] + '" width="55"/></div>';
+      html += '    <div class="item-inner">';
+      html += '      <div class="item-title-row">';
+      html += '        <h6 class="item-title"><a href="/blog/' + data[i]['id'] + '/">' + data[i]['title'] + '</a></h6>';
+      html += '        <a class="item-after bookmark-btn">';
+      html += '          <i class="fa fa-bookmark-o"></i>';
+      html += '          <i class="fa fa-bookmark"></i>';
+      html += '        </a>';
+      html += '      </div>';
+      html += '      <div class="item-subtitle">' + data[i]['tanggal'] + '</div>';
+      html += '      <div class="item-price">Pengumuman</div>';
+      html += '    </div>';
+      html += '  </div>';
+      html += '  <div class="sortable-handler"></div>';
+      html += '</li>';
+
+    }
+
+    $$(".lastblog-list").html(html);
+
+  });
+
+  //Getting Booking Result
+  app.request.post(apiUrl + 'apam/', {
+    action: 'antrian',
+    no_rkm_medis: no_rkm_medis,
+    token: token
+  }, function (data) {
+    app.dialog.close();
     data = JSON.parse(data);
 
     var html = '';
@@ -218,8 +450,8 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
       html += '      <div class="text-align-center" style="font-size:18px;font-weight:bold;text-shadow: 2px 2px 4px #000000;color:#fff;padding-top:px;">' + data[i]['nm_dokter'] + '</div>';
       html += '  </div>';
       html += '</div>';
-      html += '<div class="row">';
-      html += '  <div class="col">';
+      html += '<div class="row" style="margin:0px !important; padding:0px !important;">';
+      html += '  <div class="col" style="margin:0px !important; padding:0px !important;">';
       html += '      <div class="text-align-center" style="font-size:50px;font-weight:bold;text-shadow: 2px 2px 4px #000000;color:#fff;padding-top:0px;">' + data[i]['no_reg'] + '</div>';
       html += '  </div>';
       html += '</div>';
@@ -234,10 +466,12 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
 
   });
 
+
   //Getting Booking list
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'lastbooking',
-    no_rkm_medis: no_rkm_medis
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -266,9 +500,10 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
 
 
   //Getting Rujukan list
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'cekrujukan',
-    no_rkm_medis: no_rkm_medis
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -309,6 +544,59 @@ $$(document).on('page:init', '.page[data-name="home"]', function(e) {
 
   });
 
+});
+
+//=================================================//
+// Load data untuk halaman notifikasi.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="notifikasi"]', function(e) {
+
+  var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+
+  //Getting Dokter list
+  app.dialog.preloader('Loading...');
+  app.request.post(apiUrl + 'apam/', {
+    action: 'notifikasilist',
+    no_rkm_medis: no_rkm_medis,
+    token: token
+  }, function (data) {
+    //console.log(data);
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<div class="card card-bx noti-area">';
+      html += '  <div class="item-title"><i class="text-success fa fa-circle"></i> ' + data[i]['judul'] + '</div>';
+      html += '  <div class="item-text">' + data[i]['pesan'] + '</div>';
+      html += '  <div class="item-time">';
+      html += '    <span><i class="fa fa-clock-o"></i> ' + data[i]['tanggal'] + '</span>';
+      if(data[i]['status'] == 'unread') {
+        html += '    <span class="text-primary tandai_sudah_dibaca color-red" data-judul="' + data[i]['judul'] + '" data-id="' + data[i]['id'] + '">Tandai dibaca</span>';
+      } else {
+        html += '    <span class="text-primary">Sudah dibaca</span>';
+      }
+      html += '  </div>';
+      html += '</div>';
+    }
+
+    $$(".notifikasi-list").html(html);
+  });
+
+  $$(document).on('click', '.tandai_sudah_dibaca', function(){
+      var judul  = $$(this).attr('data-judul');
+      var id = $$(this).attr('data-id');
+      console.log(name + ' - ' + id);
+      //mainView.router.navigate(apiUrl + 'apam/' + name + '&id=' + id);
+      app.request.post(apiUrl + 'apam/', {
+        action: 'tandaisudahdibaca',
+        id: id,
+        token: token
+      }, function (data) {
+        app.dialog.alert('Notifikasi ' + judul + ' sudah dibaca..!');
+      });
+  });
 
 });
 
@@ -325,12 +613,22 @@ $$(document).on('page:init', '.page[data-name="bookingdetail"]', function(e) {
 
   app.dialog.preloader('Loading...');
 
+  var typeNumber = 4;
+  var errorCorrectionLevel = 'L';
+  cellSize = 6,
+	margin = 10;
+  var qr = qrcode(typeNumber, errorCorrectionLevel);
+  qr.addData(no_reg);
+  qr.make();
+  document.getElementById('qrBooking').innerHTML = qr.createImgTag(cellSize, margin);
+
   //Getting Booking list
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'bookingdetail',
     no_rkm_medis: no_rkm_medis,
     tanggal_periksa: tanggal_periksa,
-    no_reg: no_reg
+    no_reg: no_reg,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -367,15 +665,16 @@ $$(document).on('page:init', '.page[data-name="kamar"]', function(e) {
 
   //Getting Dokter list
   app.dialog.preloader('Loading...');
-  app.request.post(apiUrl + 'api.php', {
-    action: 'kamar'
+  app.request.post(apiUrl + 'apam/', {
+    action: 'kamar',
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
 
     var html = '';
     for(i=0; i<data.length; i++) {
-      html += '<li>';
+      html += '<li><a href="/rawatinap/" class="item-link">';
       html += ' <div class="item-content">';
       html += '  <div class="item-inner">';
       html += '   <div class="item-title">';
@@ -385,7 +684,7 @@ $$(document).on('page:init', '.page[data-name="kamar"]', function(e) {
       html += '   </div>';
       html += '  </div>';
       html += ' </div>';
-      html += '</li>';
+      html += '</a></li>';
     }
 
     $$(".kamar-list").html(html);
@@ -399,18 +698,26 @@ $$(document).on('page:init', '.page[data-name="kamar"]', function(e) {
 
 $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
 
+  var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus' , 'September' , 'Oktober', 'November', 'Desember'];
+  var dayNamesShort = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
   var calendarDokter = app.calendar.create({
     inputEl: '#dokter-calendar',
     closeOnSelect: true,
+    weekHeader: true,
+    dateFormat: 'yyyy-mm-dd',
+    dayNamesShort: dayNamesShort,
+    monthNames: monthNames,
     on: {
       closed: function () {
         var tanggal = $$('#dokter-calendar').val();
-        //console.log('Calendar closed' + tanggal + 'isinya')
+        //console.log('Calendar closed ' + tanggal + 'isinya')
         //Getting History list
         app.dialog.preloader("Loading...");
-        app.request.post(apiUrl + 'api.php', {
+        app.request.post(apiUrl + 'apam/', {
           action: 'dokter',
-          tanggal: tanggal
+          tanggal: tanggal,
+          token: token
         }, function (data) {
           app.dialog.close();
           data = JSON.parse(data);
@@ -446,9 +753,10 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
   app.dialog.preloader("Loading...");
   var today = new Date().getFullYear()+'-'+("0"+(new Date().getMonth()+1)).slice(-2)+'-'+("0"+new Date().getDate()).slice(-2);
   //console.log('Get hari ini ' + today + 'bro isinya')
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'dokter',
-    tanggal: today
+    tanggal: today,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -480,6 +788,144 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
 });
 
 //=================================================//
+// Load data untuk halaman rawatjalan.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="rawatjalan"]', function(e) {
+
+  //Getting Dokter list
+  app.dialog.preloader('Loading...');
+  app.request.post(apiUrl + 'apam/', {
+    action: 'rawatjalan',
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<li>';
+      html += ' <div class="item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title">';
+      html += '    <div class="item">Klinik: ' + data[i]['nm_poli'] + '</div>';
+      html += '    <div style="font-size:12px;">Tarif: ' + data[i]['registrasi'] + '</div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </div>';
+      html += '</li>';
+    }
+
+    $$(".rawatjalan-list").html(html);
+  });
+
+});
+
+//=================================================//
+// Load data untuk halaman rawatinap.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="rawatinap"]', function(e) {
+
+  //Getting Dokter list
+  app.dialog.preloader('Loading...');
+  app.request.post(apiUrl + 'apam/', {
+    action: 'rawatinap',
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<li>';
+      html += ' <div class="item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title">';
+      html += '    <div class="item">Kamar: ' + data[i]['nm_bangsal'] + ' - ' + data[i]['kd_kamar'] + '</div>';
+      html += '    <div class="item">Kelas: ' + data[i]['kelas'] + '</div>';
+      html += '    <div class="item">Status: ' + data[i]['status'] + '</div>';
+      html += '    <div style="font-size:12px;">Tarif: ' + data[i]['trf_kamar'] + '</div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </div>';
+      html += '</li>';
+    }
+
+    $$(".rawatinap-list").html(html);
+  });
+
+});
+
+//=================================================//
+// Load data untuk halaman laboratorium.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="laboratorium"]', function(e) {
+
+  //Getting Dokter list
+  app.dialog.preloader('Loading...');
+  app.request.post(apiUrl + 'apam/', {
+    action: 'laboratorium',
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<li>';
+      html += ' <div class="item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title">';
+      html += '    <div class="item">Jenis: ' + data[i]['nm_perawatan'] + '</div>';
+      html += '    <div style="font-size:12px;">Tarif: ' + data[i]['total_byr'] + '</div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </div>';
+      html += '</li>';
+    }
+
+    $$(".laboratorium-list").html(html);
+  });
+
+});
+
+//=================================================//
+// Load data untuk halaman radiologi.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="radiologi"]', function(e) {
+
+  //Getting Dokter list
+  app.dialog.preloader('Loading...');
+  app.request.post(apiUrl + 'apam/', {
+    action: 'radiologi',
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<li>';
+      html += ' <div class="item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title">';
+      html += '    <div class="item">Jenis: ' + data[i]['nm_perawatan'] + '</div>';
+      html += '    <div style="font-size:12px;">Tarif: ' + data[i]['total_byr'] + '</div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </div>';
+      html += '</li>';
+    }
+
+    $$(".radiologi-list").html(html);
+  });
+
+});
+
+//=================================================//
 // Load data untuk halaman riwayat-detail.html               //
 //=================================================//
 
@@ -492,11 +938,12 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail"]', function(e) {
 
   //Getting History list
   app.dialog.preloader("Loading...");
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'riwayatdetail',
     no_rkm_medis: no_rkm_medis,
     tgl_registrasi: tgl_registrasi,
-    no_reg: no_reg
+    no_reg: no_reg,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -577,104 +1024,6 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail"]', function(e) {
 });
 
 //=================================================//
-// Load data untuk halaman riwayat-detail.html               //
-//=================================================//
-
-$$(document).on('page:init', '.page[data-name="riwayatdetail-ranap"]', function(e) {
-
-  var page = e.detail;
-  var no_rkm_medis = page.route.params.no_rkm_medis;
-  var tgl_registrasi = page.route.params.tgl_registrasi;
-  var no_reg = page.route.params.no_reg;
-
-  //Getting History list
-  app.dialog.preloader("Loading...");
-  app.request.post(apiUrl + 'api.php', {
-    action: 'riwayatdetail-ranap',
-    no_rkm_medis: no_rkm_medis,
-    tgl_registrasi: tgl_registrasi,
-    no_reg: no_reg
-  }, function (data) {
-    app.dialog.close();
-    data = JSON.parse(data);
-
-    var html = '';
-    for(i=0; i<data.length; i++) {
-
-      html += '<div class="block-title">Data Pendaftaran</div>';
-      html += '<div class="card">';
-      html += ' <div class="list">';
-      html += '  <ul>';
-      html += '   <li>';
-      html += '    <div class="item-content">';
-      html += '     <div class="item-inner">';
-      html += '      <div class="item-title">Nomor Rawat</div>';
-      html += '      <div class="item-after">' + data[i]['no_rawat'] + '</div>';
-      html += '     </div>';
-      html += '    </div>';
-      html += '   </li>';
-      html += '   <li>';
-      html += '    <div class="item-content">';
-      html += '     <div class="item-inner">';
-      html += '      <div class="item-title">Tanggal</div>';
-      html += '      <div class="item-after">' + data[i]['tgl_registrasi'] + '</div>';
-      html += '     </div>';
-      html += '    </div>';
-      html += '   </li>';
-      html += '   <li>';
-      html += '    <div class="item-content">';
-      html += '     <div class="item-inner">';
-      html += '      <div class="item-title">Bangsal/Kamar</div>';
-      html += '      <div class="item-after">' + data[i]['nm_bangsal'] + '</div>';
-      html += '     </div>';
-      html += '    </div>';
-      html += '   </li>';
-      html += '   <li>';
-      html += '    <div class="item-content">';
-      html += '     <div class="item-inner">';
-      html += '      <div class="item-title">Dokter</div>';
-      html += '      <div class="item-after">' + data[i]['nm_dokter'] + '</div>';
-      html += '     </div>';
-      html += '    </div>';
-      html += '   </li>';
-      html += '   <li>';
-      html += '    <div class="item-content">';
-      html += '     <div class="item-inner">';
-      html += '      <div class="item-title">Cara Bayar</div>';
-      html += '      <div class="item-after">' + data[i]['png_jawab'] + '</div>';
-      html += '     </div>';
-      html += '    </div>';
-      html += '   </li>';
-      html += '  </ul>';
-      html += ' </div>';
-      html += '</div>';
-
-      html += '<div class="block-title">Pemeriksaan</div>';
-      html += '<div class="card padding">';
-      html += '  <div class="card-content">Keluhan: ' + data[i]['keluhan'] + '</div>';
-      html += '  <div class="card-content">Pemeriksaan: ' + data[i]['pemeriksaan'] + '</div>';
-      html += '</div>';
-
-      html += '<div class="block-title">Diagnosa</div>';
-      html += '<div class="card padding">';
-      html += '  <div class="card-content">' + data[i]['nm_penyakit'] + '</div>';
-      html += '</div>';
-
-      html += '<div class="block-title">Resep Obat</div>';
-      html += '<div class="card padding">';
-      html += '  <div class="card-content">' + data[i]['nama_brng'] + '</div>';
-      html += '</div>';
-
-    }
-
-    $$(".riwayat-detail-ranap").html(html);
-
-  });
-
-});
-
-
-//=================================================//
   // Load data untuk halaman profil.html               //
 //=================================================//
 
@@ -688,11 +1037,21 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
   var getColor = localStorage.getItem("color");
   $$("option[value=" + getColor + "]").prop('selected', true);
 
+  var typeNumber = 4;
+  var errorCorrectionLevel = 'L';
+  cellSize = 6,
+	margin = 10;
+  var qr = qrcode(typeNumber, errorCorrectionLevel);
+  qr.addData(no_rkm_medis);
+  qr.make();
+  document.getElementById('qrKartuVirtual').innerHTML = qr.createImgTag(cellSize, margin);
+
   //Getting user information
   app.dialog.preloader('Loading...');
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: "profil",
-    no_rkm_medis: no_rkm_medis
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     //app.dialog.close();
     data = JSON.parse(data);
@@ -705,9 +1064,10 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
   });
 
   //Getting Booking list
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'booking',
-    no_rkm_medis: no_rkm_medis
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     //app.dialog.close();
     data = JSON.parse(data);
@@ -736,9 +1096,10 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
 
   //Getting History list
   //app.dialog.preloader("Loading...");
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'riwayat',
-    no_rkm_medis: no_rkm_medis
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -765,9 +1126,12 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
 
   });
 
-  app.request.post(apiUrl + 'api.php', {
-    action: 'riwayat-ranap',
-    no_rkm_medis: no_rkm_medis
+  //Getting History list
+  //app.dialog.preloader("Loading...");
+  app.request.post(apiUrl + 'apam/', {
+    action: 'billing',
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -775,14 +1139,15 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
     var html = '';
     for(i=0; i<data.length; i++) {
       html += '<li>';
-      html += ' <a href="/riwayat-ranap/' + no_rkm_medis + '/' + data[i]['tgl_registrasi'] + '/' + data[i]['no_reg'] + '/" class="item-link item-content">';
+      //html += ' <a href="/billing/' + no_rkm_medis + '/' + data[i]['tgl_registrasi'] + '/" class="item-link item-content">';
+      html += ' <a href="#" class="item-link item-content">';
       html += '  <div class="item-inner">';
       html += '   <div class="item-title-row">';
       html += '    <div class="item-title">';
       html += '     <div class="item-header">' + data[i]['tgl_registrasi'] + '</div>';
-      html += '     ' + data[i]['nm_bangsal'] + '';
-      html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
-      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
+      html += '     <b>Klinik:</b> ' + data[i]['nm_poli'] + '';
+      html += '     <div class=""><b>Kode:</b> ' + data[i]['kd_billing'] + '</div>';
+      html += '     <div class=""><b>Total:</b> Rp. ' + data[i]['total_bayar'] + '</div>';
       html += '    </div>';
       html += '   </div>';
       html += '  </div>';
@@ -790,38 +1155,8 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
       html += '</li>';
     }
 
-    $$(".riwayat-ranap-list").html(html);
+    $$(".billing-list").html(html);
 
-  });
-
-  $$('.logout-btn').on('click', function () {
-    app.dialog.confirm('Anda yakin ingin signout?', function () {
-      app.dialog.alert('Anda telah keluar sepenuhnya dari sistem!');
-      localStorage.removeItem("no_rkm_medis");
-      //localStorage.removeItem("layout");
-      //localStorage.removeItem("color");
-      mainView.router.navigate('/', {
-        clearPreviousHistory: true
-      });
-    });
-  });
-
-  $$('input[name="layout"]').on('change', function () {
-    if (this.checked) {
-      localStorage.setItem("layout", this.value);
-      $$('.view').removeClass('theme-white');
-      $$('.view').addClass(this.value);
-    } else {
-      localStorage.setItem("layout", "theme-white");
-      $$('.view').removeClass('theme-dark');
-      $$('.view').addClass("theme-white");
-    }
-  });
-
-  $$('select[name="color"]').on('change', function () {
-    localStorage.setItem("color", this.value);
-    $$('.view').removeClass('color-theme-red color-theme-blue color-theme-green color-theme-pink color-theme-orange');
-    $$('.view').addClass(this.value);
   });
 
 });
@@ -842,6 +1177,7 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
   var calendar = app.calendar.create({
     containerEl: '#calendar-container',
     inputEl: '.tanggal',
+    dateFormat: 'yyyy-mm-dd',
     disabled: [
       {
         from: yearBefore,
@@ -893,9 +1229,10 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
 
       app.dialog.preloader("Loading...");
 
-      app.request.post(apiUrl + 'api.php', {
+      app.request.post(apiUrl + 'apam/', {
         action: 'jadwalklinik',
-        tanggal: tanggal
+        tanggal: tanggal,
+        token: token
       }, function (data) {
         app.dialog.close();
         data = JSON.parse(data);
@@ -914,10 +1251,11 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
         var kd_poli = $$(this).val();
         var tanggal = $$('.tanggal').val();
 
-        app.request.post(apiUrl + 'api.php', {
+        app.request.post(apiUrl + 'apam/', {
           action: 'jadwaldokter',
           tanggal: tanggal,
-          kd_poli: kd_poli
+          kd_poli: kd_poli,
+          token: token
         }, function (data) {
           app.dialog.close();
           data = JSON.parse(data);
@@ -955,8 +1293,9 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
 
   });
 
-  app.request.post(apiUrl + 'api.php', {
-    action: "carabayar"
+  app.request.post(apiUrl + 'apam/', {
+    action: "carabayar",
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -1000,21 +1339,20 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
       // Show Preloader
       app.dialog.preloader("Loading...");
 
-      app.request.post(apiUrl + 'api.php', {
+      app.request.post(apiUrl + 'apam/', {
         action: "daftar",
         no_rkm_medis: no_rkm_medis,
         tanggal: tanggal,
         kd_poli: kd_poli,
         kd_dokter: kd_dokter,
-        kd_pj: kd_pj
+        kd_pj: kd_pj,
+        token: token
       }, function (data) {
+        //console.log(data);
         app.dialog.close();
         data = JSON.parse(data);
 
-        if(data.state == "limit") {
-          app.dialog.alert('Limit pendaftaran online telah terpenuhi. Silahkan pilih hari lain.');
-        }
-        else if(data.state == "duplication") {
+        if(data.state == "duplication") {
           app.dialog.alert('Anda sudah terdaftar ditanggal pilihan anda.');
         }
         else if(data.state == "success") {
@@ -1043,9 +1381,10 @@ $$(document).on('page:init', '.page[data-name="sukses"]', function(e) {
 
   //Getting Booking Result
   app.dialog.preloader("Loading...");
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'sukses',
-    no_rkm_medis: no_rkm_medis
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -1084,9 +1423,10 @@ $$(document).on('page:init', '.page[data-name="pengaduan"]', function(e) {
 
   //Getting Booking list
   app.dialog.preloader("Loading...");
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'pengaduan',
-    no_rkm_medis: no_rkm_medis
+    no_rkm_medis: no_rkm_medis,
+    token: token
   }, function (data) {
     app.dialog.close();
     data = JSON.parse(data);
@@ -1094,17 +1434,31 @@ $$(document).on('page:init', '.page[data-name="pengaduan"]', function(e) {
     var html = '';
     for(i=0; i<data.length; i++) {
 
-      html += '<li class="swipeout">';
+      /*html += '<li class="swipeout">';
       html += '    <a href="/pengaduan/' + no_rkm_medis + '/' + data[i]['id'] + '/" class="item-link item-content swipeout-content">';
       html += '        <div class="item-media"><img src="img/' + data[i]['jk'] + '.png" width="44" alt=""></div>';
       html += '        <div class="item-inner">';
       html += '            <div class="item-title-row">';
       html += '                <div class="item-title">' + data[i]['nm_pasien'] + '</div>';
-      html += '                <div class="item-after">' + data[i]['date_time'] + '</div>';
+      html += '                <div class="item-after">' + data[i]['tanggal'] + '</div>';
       html += '            </div>';
-      html += '            <div class="item-text">' + data[i]['message'] + '</div>';
+      html += '            <div class="item-text">' + data[i]['pesan'] + '</div>';
       html += '        </div>';
       html += '    </a>';
+      html += '</li>';*/
+
+      html += '<li>';
+      html += '  <a href="/pengaduan/' + no_rkm_medis + '/' + data[i]['id'] + '/" class="item-link item-content">';
+      html += '    <div class="item-media"><img src="img/' + data[i]['jk'] + '.png" width="50"></div>';
+      html += '    <div class="item-inner">';
+      html += '      <div class="item-title-row">';
+      html += '        <div class="item-title">' + data[i]['nm_pasien'] + '</div>';
+      html += '        <div class="item-after text-primary"><i class="fa fa-check ml-5"></i></div>';
+      html += '      </div>';
+      html += '      <div class="item-text">' + data[i]['pesan'] + '</div>';
+      html += '      <div class="item-subtitle">' + data[i]['tanggal'] + '</div>';
+      html += '    </div>';
+      html += '  </a>';
       html += '</li>';
 
     }
@@ -1119,23 +1473,24 @@ $$(document).on('page:init', '.page[data-name="pengaduan"]', function(e) {
     var message = $$('#pengaduan-form .message').val();
 
     if(message == "") {
-      app.router.back('/pengaduan/', {
+      app.views.main.router.back('/pengaduan/', {
         ignoreCache: true,
         force: true,
         context: {}
       });
     } else {
 
-      app.request.post(apiUrl + 'api.php', {
+      app.request.post(apiUrl + 'apam/', {
         action: "simpanpengaduan",
         no_rkm_medis: no_rkm_medis,
-        message: message
+        message: message,
+        token: token
       }, function (data) {
         app.dialog.close();
         data = JSON.parse(data);
         if(data.state == "success") {
           app.dialog.alert('Pengaduan anda telah disimpan!. Silahkan tekan tombol <b>Ya</b> untuk kembali ke halaman utama.', function () {
-            app.router.back('/home/', {
+            app.views.main.router.back('/home/', {
               ignoreCache: true,
               force: true,
               context: {}
@@ -1165,11 +1520,13 @@ $$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
 
   //Getting History list
   app.dialog.preloader("Loading...");
-  app.request.post(apiUrl + 'api.php', {
+  app.request.post(apiUrl + 'apam/', {
     action: 'pengaduandetail',
     no_rkm_medis: no_rkm_medis,
-    pengaduan_id: pengaduan_id
+    pengaduan_id: pengaduan_id,
+    token: token
   }, function (data) {
+    //console.log(data);
     app.dialog.close();
     data = JSON.parse(data);
 
@@ -1196,10 +1553,10 @@ $$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
         html += '  <div class="card-header">';
         html += '    <div class="facebook-avatar"><img src="img/L.png" width="34" height="34"/></div>';
         html += '    <div class="facebook-name">' + data[i]['nama'] + '</div>';
-        html += '    <div class="facebook-date">' + data[i]['date_time'] + '</div>';
+        html += '    <div class="facebook-date">' + data[i]['tanggal'] + '</div>';
         html += '  </div>';
         html += '  <div class="card-content card-content-padding">';
-        html += '    <p>' + data[i]['message'] + '</p>';
+        html += '    <p>' + data[i]['pesan'] + '</p>';
         html += '  </div>';
         html += '</div>';
 
@@ -1218,24 +1575,26 @@ $$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
     var pengaduan_id = page.route.params.id;
 
     if(message == "") {
-      app.router.back('/pengaduan/', {
+      app.views.main.router.back('/pengaduan/', {
         ignoreCache: true,
         force: true,
         context: {}
       });
     } else {
 
-      app.request.post(apiUrl + 'api.php', {
+      app.request.post(apiUrl + 'apam/', {
         action: "simpanpengaduandetail",
         no_rkm_medis: no_rkm_medis,
         message: message,
-        pengaduan_id: pengaduan_id
+        pengaduan_id: pengaduan_id,
+        token: token
       }, function (data) {
+        //console.log(data);
         app.dialog.close();
         data = JSON.parse(data);
         if(data.state == "success") {
-          app.dialog.alert('Balasan pengaduan anda telah disimpan!. Silahkan tekan tombol <b>Ya</b> untuk kembali ke halaman pngaduan.', function () {
-            app.router.back('/pengaduan/', {
+          app.dialog.alert('Balasan pengaduan anda telah disimpan!. Silahkan tekan tombol <b>Ya</b> untuk kembali ke halaman pengaduan.', function () {
+            app.views.main.router.back('/pengaduan/', {
               ignoreCache: true,
               force: true,
               context: {}
@@ -1248,6 +1607,124 @@ $$(document).on('page:init', '.page[data-name="pengaduandetail"]', function(e) {
 
     app.sheet.close('.pengaduandetail-sheet');
 
+  });
+
+});
+
+
+//=================================================//
+  // Load data untuk halaman blog.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="blog"]', function(e) {
+
+  //Getting Booking list
+  app.request.post(apiUrl + 'apam/', {
+    action: 'blog',
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+
+      html += '<li>';
+      html += '  <div class="item-content">';
+      html += '    <div class="item-media"><img src="' + website_upload + '/blog/' + data[i]['cover_photo'] + '" width="55"/></div>';
+      html += '    <div class="item-inner">';
+      html += '      <div class="item-title-row">';
+      html += '        <h6 class="item-title"><a href="/blog/' + data[i]['id'] + '/">' + data[i]['title'] + '</a></h6>';
+      html += '        <a class="item-after bookmark-btn">';
+      html += '          <i class="fa fa-bookmark-o"></i>';
+      html += '          <i class="fa fa-bookmark"></i>';
+      html += '        </a>';
+      html += '      </div>';
+      html += '      <div class="item-subtitle">' + data[i]['tanggal'] + '</div>';
+      html += '      <div class="item-price">Pengumuman</div>';
+      html += '    </div>';
+      html += '  </div>';
+      html += '  <div class="sortable-handler"></div>';
+      html += '</li>';
+
+    }
+
+    $$(".blog-list").html(html);
+
+  });
+
+});
+
+//=================================================//
+  // Load data untuk halaman blog-detail.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="blogdetail"]', function(e) {
+
+  var page = e.detail;
+  var id = page.route.params.id;
+
+  //Getting Booking list
+  app.request.post(apiUrl + 'apam/', {
+    action: 'blogdetail',
+    id: id,
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+    var html = '';
+    for(i=0; i<data.length; i++) {
+
+      html += '<div class="card demo-facebook-card">';
+      html += ' <div class="card-header">';
+      html += '   <div class="demo-facebook-avatar"><img src="' + website_upload + '/blog/' + data[i]['cover_photo'] + '" width="34" height="34"/></div>';
+      html += '   <div class="demo-facebook-name">' + data[i]['title'] + '</div>';
+      html += '   <div class="demo-facebook-date">' + data[i]['tanggal'] + '</div>';
+      html += ' </div>';
+      html += ' <div class="card-content card-content-padding">';
+      html += '   <img src="' + website_upload + '/blog/' + data[i]['cover_photo'] + '" width="100%"/><p>' + data[i]['content'] + '</p>';
+      html += ' </div>';
+      html += '</div>';
+
+    }
+
+    $$(".blog-detail").html(html);
+
+  });
+
+});
+
+
+//=================================================//
+  // Load data untuk halaman pengaturan.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="pengaturan"]', function(e) {
+
+  var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+
+  var getLayout = localStorage.getItem("layout");
+  $$("input[value=" + getLayout + "]").prop('checked', true);
+
+  var getColor = localStorage.getItem("color");
+  $$("option[value=" + getColor + "]").prop('selected', true);
+
+  $$('input[name="layout"]').on('change', function () {
+    if (this.checked) {
+      localStorage.setItem("layout", this.value);
+      $$('.view').removeClass('theme-white');
+      $$('.view').addClass(this.value);
+    } else {
+      localStorage.setItem("layout", "theme-white");
+      $$('.view').removeClass('theme-dark');
+      $$('.view').addClass("theme-white");
+    }
+  });
+
+  $$('select[name="color"]').on('change', function () {
+    localStorage.setItem("color", this.value);
+    $$('.view').removeClass('color-theme-red color-theme-blue color-theme-lightblue color-theme-green color-theme-pink color-theme-orange color-theme-deeporange color-theme-yellow color-theme-lime color-theme-teal color-theme-purple color-theme-deeppurple color-theme-gray color-theme-black');
+    $$('.view').addClass(this.value);
   });
 
 });
