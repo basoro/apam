@@ -72,6 +72,9 @@ routes = [
     url: './pages/riwayat-detail.html',
   },
   {
+    path: '/riwayatranap/:no_rkm_medis/:tgl_registrasi/:no_reg/',
+    url: './pages/riwayatranap-detail.html',
+  },  {
     path: '/profil/',
     url: './pages/profil.html',
   },
