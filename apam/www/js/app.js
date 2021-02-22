@@ -46,9 +46,6 @@ var app  = new Framework7({
   actions: {
     closeOnEscape: true,
   },
-  vi: {
-    placementId: 'pltd4o7ibb9rc653x14',
-  },
   // App routes
   routes: routes,
 });
