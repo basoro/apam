@@ -3,7 +3,7 @@ const nama_instansi = 'RS Masa Kini'; // Hospital Name
 const apiUrl = 'http://localhost/Khanza-Lite/api/'; // API Server URL
 const website_upload = 'http://localhost/Khanza-Lite/uploads/'; // API Server URL
 const token = 'qtbexUAxzqO3M8dCOo2vDMFvgYjdUEdMLVo341'; // Token code for security purpose
-const startDate = -1; // Start date of day for registration
+const startDate = 0; // Start date of day for registration
 const endDate = 7; // End date of day for registration
 const debug = 1; // Ganti menjadi 0 sebelum build di phonegap.com
 
@@ -1168,7 +1168,7 @@ $$(document).on('page:init', '.page[data-name="profil"]', function(e) {
 $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
 
   var today = new Date();
-  var startDay = new Date().setDate(today.getDate() - (startDate));
+  var startDay = new Date().setDate(today.getDate() + startDate);
   var endDay = new Date().setDate(today.getDate() + endDate);
   var yearBefore = new Date().setDate(today.getDate() - 365);
   var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus' , 'September' , 'Oktober', 'November', 'Desember'];
