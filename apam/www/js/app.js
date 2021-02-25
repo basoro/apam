@@ -1006,6 +1006,21 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail"]', function(e) {
       html += '  <div class="card-content">' + data[i]['nama_brng'] + '</div>';
       html += '</div>';
 
+      html += '<div class="block-title">Pemeriksaan Laboratorium</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content">' + data[i]['pemeriksaan_lab'] + '</div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Pemeriksaan Radiologi</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content">' + data[i]['hasil_radiologi'] + '</div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Hasil Radiologi</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content"><img src="' + webapps_url + '/radiologi/' + data[i]['gambar_radiologi'] + '" width="100%"/></div>';
+      html += '</div>';
+
     }
 
     $$(".riwayat-detail").html(html);
@@ -1102,6 +1117,21 @@ $$(document).on('page:init', '.page[data-name="riwayatranap-detail"]', function(
       html += '<div class="block-title">Resep Obat</div>';
       html += '<div class="card padding">';
       html += '  <div class="card-content">' + data[i]['nama_brng'] + '</div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Pemeriksaan Laboratorium</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content">' + data[i]['pemeriksaan_lab'] + '</div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Pemeriksaan Radiologi</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content">' + data[i]['hasil_radiologi'] + '</div>';
+      html += '</div>';
+
+      html += '<div class="block-title">Hasil Radiologi</div>';
+      html += '<div class="card padding">';
+      html += '  <div class="card-content"><img src="' + webapps_url + '/radiologi/' + data[i]['gambar_radiologi'] + '" width="100%"/></div>';
       html += '</div>';
 
     }
