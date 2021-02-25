@@ -1009,12 +1009,20 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail"]', function(e) {
 
       html += '<div class="block-title">Pemeriksaan Laboratorium</div>';
       html += '<div class="card padding">';
-      html += '  <div class="card-content">' + data[i]['pemeriksaan_lab'] + '</div>';
+      if(data[i]['pemeriksaan_lab'] == '') {
+        html += '  <div class="card-content">null</div>';
+      } else {
+        html += '  <div class="card-content">' + data[i]['pemeriksaan_lab'] + '</div>';
+      }
       html += '</div>';
 
       html += '<div class="block-title">Pemeriksaan Radiologi</div>';
       html += '<div class="card padding">';
-      html += '  <div class="card-content">' + data[i]['hasil_radiologi'] + '</div>';
+      if(data[i]['hasil_radiologi'] == '') {
+        html += '  <div class="card-content">null</div>';
+      } else {
+        html += '  <div class="card-content">' + data[i]['hasil_radiologi'] + '</div>';
+      }
       html += '</div>';
 
       html += '<div class="block-title">Hasil Radiologi</div>';
@@ -1126,12 +1134,20 @@ $$(document).on('page:init', '.page[data-name="riwayatranap-detail"]', function(
 
       html += '<div class="block-title">Pemeriksaan Laboratorium</div>';
       html += '<div class="card padding">';
-      html += '  <div class="card-content">' + data[i]['pemeriksaan_lab'] + '</div>';
+      if(data[i]['pemeriksaan_lab'] == '') {
+        html += '  <div class="card-content">null</div>';
+      } else {
+        html += '  <div class="card-content">' + data[i]['pemeriksaan_lab'] + '</div>';
+      }
       html += '</div>';
 
       html += '<div class="block-title">Pemeriksaan Radiologi</div>';
       html += '<div class="card padding">';
-      html += '  <div class="card-content">' + data[i]['hasil_radiologi'] + '</div>';
+      if(data[i]['hasil_radiologi'] == '') {
+        html += '  <div class="card-content">null</div>';
+      } else {
+        html += '  <div class="card-content">' + data[i]['hasil_radiologi'] + '</div>';
+      }
       html += '</div>';
 
       html += '<div class="block-title">Hasil Radiologi</div>';
