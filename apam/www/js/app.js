@@ -1,7 +1,8 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
 const nama_instansi = 'RS Masa Kini'; // Hospital Name
 const apiUrl = 'https://khanza.basoro.id/api/'; // API Server URL
-const website_upload = 'https://khanza.basoro.id/uploads/'; // API Server URL
+const website_upload = 'https://khanza.basoro.id/uploads/'; // Website Uploads Server URL
+const webapps_url = 'http://khanza.basoro.id/webapps/'; // Webapps Server URL
 const token = 'qtbexUAxzqO3M8dCOo2vDMFvgYjdUEdMLVo341'; // Token code for security purpose
 const startDate = 0; // Start date of day for registration
 const endDate = 7; // End date of day for registration
