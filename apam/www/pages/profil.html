@@ -1,0 +1,121 @@
+<div class="page" data-name="profil">
+  <div class="navbar navbar-style-1">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="if-not-md">Back</span>
+        </a>
+      </div>
+      <div class="title">Profil</div>
+    </div>
+  </div>
+  <div class="toolbar tabbar toolbar-bottom">
+    <div class="toolbar-inner">
+      <a href="#tab-1" class="tab-link tab-link-active"><i class="fa fa-user-o"></i>v-Card</a>
+      <a href="#tab-2" class="tab-link"><i class="fa fa-address-book-o"></i>Booking</a>
+      <a href="#tab-3" class="tab-link"><i class="fa fa-file"></i>Records</a>
+      <a href="#tab-4" class="tab-link"><i class="fa fa-file-text-o"></i>Billing</a>
+    </div>
+  </div>
+  <div class="tabs-animated-wrap">
+    <div class="tabs">
+      <div id="tab-1" class="page-content tab tab-active">
+        <h2 class="block-title text-align-center">Kartu Berobat Virtual</h2>
+        <div class="mb-30 text-align-center">
+					<div id="qrKartuVirtual"></div>
+				</div>
+        <div class="block-title">Informasi Pribadi</div>
+        <div class="card">
+          <div class="list">
+            <ul>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">
+                      <div class="item-header">Nomor Rekam Medik</div>
+                      <div class="no_rkm_medis padding-top">...</div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">
+                      <div class="item-header">Nama Lengkap</div>
+                      <div class="nm_pasien padding-top">...</div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">
+                      <div class="item-header">Tanggal Lahir</div>
+                      <div class="tgl_lahir padding-top">...</div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+              <li>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">
+                      <div class="item-header">Alamat</div>
+                      <div class="alamat padding-top">...</div>
+                    </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div id="tab-2" class="page-content tab">
+        <div class="block-title">Riwayat Booking</div>
+        <div class="list">
+          <ul class="booking-list">
+          </ul>
+        </div>
+      </div>
+      <div id="tab-3" class="page-content tab">
+        <div class="toolbar tabbar">
+          <div class="toolbar-inner">
+            <a href="#tabA1" data-route-tab-id="tabA1" class="tab-link" style="margin-top:30px;pading-bottom:40px;">Riwayat Ralan</a>
+            <a href="#tabA2" data-route-tab-id="tabA2" class="tab-link" style="margin-top:30px;pading-bottom:40px;">Riwayat Ranap</a>
+          </div>
+        </div>
+        <div class="tabs-swipeable-wrap">
+    			<div class="tabs ">
+    				<div id="tab-1" class="tab tab-active form-elements tabs tabs-animated-wrap">
+    					<div class="block tab tab-active" id="tabA1" >
+                <div class="block-title">Riwayat Medis Rawat Jalan</div>
+                <div class="list">
+                  <ul class="riwayat-list">
+                  </ul>
+                </div>
+              </div>
+              <div class="block tab" id="tabA2">
+                <div class="block-title">Riwayat Medis Rawat Inap</div>
+                <div class="list">
+                  <ul class="riwayatranap-list">
+                  </ul>
+                </div>
+    					</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="tab-4" class="page-content tab">
+        <div class="block-title">Riwayat Pembayaran</div>
+        <div class="list">
+          <ul class="billing-list">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

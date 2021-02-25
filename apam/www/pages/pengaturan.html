@@ -1,0 +1,59 @@
+<template>
+  <div class="page" data-name="pengaturan">
+    <div class="navbar navbar-style-1">
+      <div class="navbar-bg"></div>
+      <div class="navbar-inner sliding">
+        <div class="left">
+          <a href="#" class="link back">
+            <i class="icon icon-back"></i>
+            <span class="if-not-md">Back</span>
+          </a>
+        </div>
+        <div class="title">Pengaturan</div>
+      </div>
+    </div>
+    <div class="page-content">
+      <div class="block-title block-title-medium">Tampilan</div>
+      <div class="card">
+        <div class="list simple-list">
+          <ul>
+            <li>
+              <span>Tampilan Gelap</span>
+              <label class="toggle toggle-init color-blue">
+                <input type="checkbox" name="layout" value="theme-dark">
+                <span class="toggle-icon"></span>
+              </label>
+            </li>
+            <li>
+              <span>Warna Tema</span>
+              <a class="item-link smart-select smart-select-init" data-open-in="page" data-close-on-select="true">
+                <select id="color" name="color">
+                  <option value="color-theme-default">Default</option>
+                  <option value="color-theme-blue">Biru</option>
+                  <option value="color-theme-lightblue">Biru Muda</option>
+                  <option value="color-theme-red">Merah</option>
+                  <option value="color-theme-green">Hijau</option>
+                  <option value="color-theme-pink">Pink</option>
+                  <option value="color-theme-yellow">Kuning</option>
+                  <option value="color-theme-orange">Oranye</option>
+                  <option value="color-theme-deeporange">Oranye Tua</option>
+                  <option value="color-theme-lime">Lime</option>
+                  <option value="color-theme-teal">Teal</option>
+                  <option value="color-theme-purple">Ungu</option>
+                  <option value="color-theme-deeppurple">Ungu Tua</option>
+                  <option value="color-theme-gray">Abu-Abu</option>
+                  <option value="color-theme-black">Hitam</option>
+                </select>
+                <div class="item-content">
+                  <div class="item-inner">
+                    <div class="item-title">Pilih Warna </div>
+                  </div>
+                </div>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

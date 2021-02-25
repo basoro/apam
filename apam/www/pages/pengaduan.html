@@ -1,0 +1,60 @@
+<div class="page" data-name="pengaduan">
+  <div class="navbar navbar-style-1">
+    <div class="navbar-bg"></div>
+    <div class="navbar-inner sliding">
+      <div class="left">
+        <a href="#" class="link back">
+          <i class="icon icon-back"></i>
+          <span class="ios-only">Back</span>
+        </a>
+      </div>
+      <div class="title">Pesan Pengaduan</div>
+      <div class="right" style="margin-right: 10px;">
+        <a href="#" class="button button-outline sheet-open" data-sheet=".pengaduan-sheet">
+          <i class="f7-icons">compose</i>
+        </a>
+      </div>
+      <div class="subnavbar message-search">
+				<form data-search-container=".search-list" data-search-in=".item-title" class="searchbar searchbar-init">
+					<div class="searchbar-inner">
+						<div class="searchbar-input-wrap">
+							<input type="search" placeholder="Cari pengaduan..."/>
+							<i class="searchbar-icon"></i>
+							<span class="input-clear-button"></span>
+						</div>
+						<span class="searchbar-disable-button if-not-aurora">Cancel</span>
+					</div>
+				</form>
+			</div>
+    </div>
+  </div>
+  <div class="page-content">
+      <div class="searchbar-backdrop"></div>
+  		<div class="list simple-list searchbar-not-found">
+  			<ul>
+  				<li>Nothing found</li>
+  			</ul>
+  		</div>
+      <div class="list media-list search-list searchbar-found search-list-bar">
+        <ul class="pengaduan-list">
+        </ul>
+      </div>
+  </div>
+  <div class="sheet-modal pengaduan-sheet">
+    <div class="toolbar">
+      <div class="toolbar-inner">
+        <div class="left"></div>
+        <div class="right"><a class="link pengaduan-btn" href="#">Selesai</a></div>
+      </div>
+    </div>
+    <div class="sheet-modal-inner" id="pengaduan-form">
+      <div class="block">
+        <div class="list no-hairlines-md">
+          <div class="item-input-wrap">
+            <textarea class="message" placeholder="Isikan pengaduan anda disini"></textarea>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
