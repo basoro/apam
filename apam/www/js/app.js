@@ -1018,7 +1018,11 @@ $$(document).on('page:init', '.page[data-name="riwayatdetail"]', function(e) {
 
       html += '<div class="block-title">Hasil Radiologi</div>';
       html += '<div class="card padding">';
-      html += '  <div class="card-content"><img src="' + webapps_url + '/radiologi/' + data[i]['gambar_radiologi'] + '" width="100%"/></div>';
+      if(data[i]['gambar_radiologi'] == null) {
+        html += '  <div class="card-content">' + data[i]['gambar_radiologi'] + '</div>';
+      } else {
+        html += '  <div class="card-content"><img src="' + webapps_url + 'radiologi/' + data[i]['gambar_radiologi'] + '" width="100%"/></div>';
+      }
       html += '</div>';
 
     }
@@ -1131,7 +1135,11 @@ $$(document).on('page:init', '.page[data-name="riwayatranap-detail"]', function(
 
       html += '<div class="block-title">Hasil Radiologi</div>';
       html += '<div class="card padding">';
-      html += '  <div class="card-content"><img src="' + webapps_url + '/radiologi/' + data[i]['gambar_radiologi'] + '" width="100%"/></div>';
+      if(data[i]['gambar_radiologi'] == null) {
+        html += '  <div class="card-content">' + data[i]['gambar_radiologi'] + '</div>';
+      } else {
+        html += '  <div class="card-content"><img src="' + webapps_url + 'radiologi/' + data[i]['gambar_radiologi'] + '" width="100%"/></div>';
+      }
       html += '</div>';
 
     }
