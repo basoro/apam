@@ -33,7 +33,6 @@ var app  = new Framework7({
   theme: theme,
   debugger: false,
   cache: false,
-  routes: routes,
   popup: {
     closeOnEscape: true,
   },
@@ -46,9 +45,6 @@ var app  = new Framework7({
   },
   actions: {
     closeOnEscape: true,
-  },
-  vi: {
-    placementId: 'pltd4o7ibb9rc653x14',
   },
   // App routes
   routes: routes,

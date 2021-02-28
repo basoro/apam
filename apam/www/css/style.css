@@ -886,7 +886,7 @@ p {
   width: 100%;
   z-index: 9999;
   background-color: var(--f7-theme-color-light);
-  background-image: url(../img/splash-screen/spbg.png);
+  background-image: url(../img/splash-bg.png);
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat; }
