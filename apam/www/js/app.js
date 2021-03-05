@@ -1525,6 +1525,9 @@ $$(document).on('page:init', '.page[data-name="daftar"]', function(e) {
         if(data.state == "duplication") {
           app.dialog.alert('Anda sudah terdaftar ditanggal pilihan anda.');
         }
+        else if(data.state == "limit") {
+          app.dialog.alert('Kuota pendaftaran terpenuhi. Silahkan pilih hari/tanggal lain.');
+        }
         else if(data.state == "success") {
           mainView.router.navigate('/sukses/', {
             clearPreviousHistory: true
