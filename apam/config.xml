@@ -5,7 +5,7 @@
         Aplikasi Pasien Dan Antrian Mandiri.
     </description>
     <author email="dentix.id@gmail.com" href="https://basoro.github.io">
-        Faisol Basoro
+        drg. Faisol Basoro
     </author>
     <gap:config-file platform="android" parent="/manifest">
       <supports-screens
