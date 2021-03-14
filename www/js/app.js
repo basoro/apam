@@ -276,22 +276,22 @@ $$(document).on('page:init', '.page[data-name="signin"]', function(e) {
 
         if(data.state == "invalid") {
           app.dialog.alert('Gagal menyimpan data pendaftaran. Silahkan ulangi lagi beberapa saat.');
-          mainView.router.navigate('/postregister/', {
-            clearPreviousHistory: true
-          });
+          //mainView.router.navigate('/', {
+            //clearPreviousHistory: true
+          //});
         }
         else if(data.state == "duplicate") {
           app.dialog.alert('Nomor KTP atau Email sudah terdaftar disistem.');
-          mainView.router.navigate('/postregister/', {
-            clearPreviousHistory: true
-          });
+          //mainView.router.navigate('/', {
+            //clearPreviousHistory: true
+          //});
         }
         else if(data.state == "valid") {
           localStorage.setItem("email", data.email);
           localStorage.setItem("kode_validasi", data.kode_validasi);
           localStorage.setItem("time_wait", data.time_wait);
           mainView.router.navigate('/postregister/', {
-            clearPreviousHistory: true
+            //clearPreviousHistory: true
           });
         }
         else {
