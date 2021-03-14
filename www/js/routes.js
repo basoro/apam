@@ -12,6 +12,10 @@ routes = [
     url: './pages/signin.html',
   },
   {
+    path: '/postregister/',
+    url: './pages/postregister.html',
+  },
+  {
     path: '/panduan/',
     url: './pages/panduan.html',
   },
@@ -68,8 +72,16 @@ routes = [
     url: './pages/booking-detail.html',
   },
   {
+    path: '/riwayat/',
+    url: './pages/riwayat-list.html',
+  },
+  {
     path: '/riwayat/:no_rkm_medis/:tgl_registrasi/:no_reg/',
     url: './pages/riwayat-detail.html',
+  },
+  {
+    path: '/riwayatranap/',
+    url: './pages/riwayatranap-list.html',
   },
   {
     path: '/riwayatranap/:no_rkm_medis/:tgl_registrasi/:no_reg/',

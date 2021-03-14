@@ -37,33 +37,40 @@
             <div class="list">
               <p class="text-align-center">Lupa kata kunci? <a href="#tabA3"  data-route-tab-id="tabA3" class="fw6 tab-link">Atur ulang</a></p>
             </div>
-            <div class="list">
-							<a href="#tabA2"  data-route-tab-id="tabA2" class="button-large button button-outline tab-link">BUAT AKUN BARU</a>
-						</div>
             -->
+            <div class="list">
+							<a href="#tabA2"  data-route-tab-id="tabA2" class="button-large button button-outline tab-link">DAFTAR PASIEN BARU</a>
+						</div>
           </div>
           <div class="block tab" id="tabA2">
 						<h3 class="dz-title">Mendaftar sebagai pasien baru</h3>
-						<div class="list">
+						<div class="list" id="register-form">
 							<ul>
                 <li class="item-content item-input item-input-with-value">
 									<div class="item-inner">
 										<div class="item-input-wrap">
-											<input type="text" placeholder="Nama Lengkap" id="nama_lengkap" class="form-control"/>
+											<input type="text" placeholder="Nama Lengkap" id="nama_lengkap" class="form-control nama_lengkap"/>
 										</div>
 									</div>
 								</li>
 								<li class="item-content item-input item-input-with-value">
 									<div class="item-inner">
 										<div class="item-input-wrap">
-											<input type="email" placeholder="Alamat Email" id="email" class="form-control"/>
+											<input type="email" placeholder="Alamat Email" id="email" class="form-control email"/>
+										</div>
+									</div>
+								</li>
+                <li class="item-content item-input item-input-with-value">
+									<div class="item-inner">
+										<div class="item-input-wrap">
+											<input type="text" placeholder="Nomor KTP" id="nomor_ktp" class="form-control nomor_ktp"/>
 										</div>
 									</div>
 								</li>
 								<li class="item-content item-input">
 									<div class="item-inner">
 										<div class="item-input-wrap">
-											<input type="text" placeholder="Nomor Telepon" id="nomor_telepon" class="form-control"/>
+											<input type="text" placeholder="Nomor Telepon" id="nomor_telepon" class="form-control nomor_telepon"/>
 										</div>
 									</div>
 								</li>
@@ -71,15 +78,17 @@
 						</div>
 						<div class="list">
 							<ul>
-								<li><button type="button" class="button-large button button-fill" @click="home">SUBMIT</button></li>
+								<li><button type="button" class="button-large button button-fill register-btn">DAFTARKAN SAYA</button></li>
 							</ul>
 						</div>
+            <!--
 						<div class="list">
 							<p class="text-align-center">Lupa kata kunci? <a href="#tabA3"  data-route-tab-id="tabA3" class="fw6 tab-link">Atur ulang</a></p>
 							<div class="social-account">
 								<p class="fs-14 fw3 text-align-center">Sudah terdaftar sebagai pasien</p>
 							</div>
 						</div>
+            -->
 						<div class="list">
 							<a href="#tabA1"  data-route-tab-id="tabA1" class="button-large button button-outline tab-link">SIGN IN</a>
 						</div>

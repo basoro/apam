@@ -2,7 +2,7 @@
 const nama_instansi = 'RS Masa Kini'; // Hospital Name
 const apiUrl = 'https://khanza.basoro.id/api/'; // API Server URL
 const website_upload = 'https://khanza.basoro.id/uploads/'; // Website Uploads Server URL
-const webapps_url = 'http://khanza.basoro.id/webapps/'; // Webapps Server URL
+const webapps_url = 'https://khanza.basoro.id/webapps/'; // Webapps Server URL
 const token = 'qtbexUAxzqO3M8dCOo2vDMFvgYjdUEdMLVo341'; // Token code for security purpose
 const startDate = 0; // Start date of day for registration
 const endDate = 7; // End date of day for registration
@@ -241,6 +241,151 @@ $$(document).on('page:init', '.page[data-name="signin"]', function(e) {
       });
     }
   });
+  $$('.page[data-name="signin"] .register-btn').on('click', function () {
+    var nama_lengkap = $$('#register-form .nama_lengkap').val();
+    var email = $$('#register-form .email').val();
+    var nomor_ktp = $$('#register-form .nomor_ktp').val();
+    var nomor_telepon = $$('#register-form .nomor_telepon').val();
+
+    if(nama_lengkap == "") {
+      app.dialog.alert('Isian nama lengkap tidak boleh kosong.');
+    }
+    else if(email == "") {
+      app.dialog.alert('Isian email tidak boleh kosong.');
+    }
+    else if(nomor_ktp == "") {
+      app.dialog.alert('Isian nomor KTP tidak boleh kosong.');
+    }
+    else if(nomor_telepon == "") {
+      app.dialog.alert('Isian nomor telepon tidak boleh kosong.');
+    }
+    else {
+      // Show Preloader
+      app.dialog.preloader("Sedang mengirim kode validasi ke email anda!");
+      app.request.post(apiUrl + 'apam/', {
+        action: 'register',
+        nama_lengkap: nama_lengkap,
+        email: email,
+        nomor_ktp: nomor_ktp,
+        nomor_telepon: nomor_telepon,
+        token: token
+      }, function (data) {
+        //console.log(data);
+        app.dialog.close();
+        data = JSON.parse(data);
+
+        if(data.state == "invalid") {
+          app.dialog.alert('Gagal menyimpan data pendaftaran. Silahkan ulangi lagi beberapa saat.');
+          mainView.router.navigate('/postregister/', {
+            clearPreviousHistory: true
+          });
+        }
+        else if(data.state == "duplicate") {
+          app.dialog.alert('Nomor KTP atau Email sudah terdaftar disistem.');
+          mainView.router.navigate('/postregister/', {
+            clearPreviousHistory: true
+          });
+        }
+        else if(data.state == "valid") {
+          localStorage.setItem("email", data.email);
+          localStorage.setItem("kode_validasi", data.kode_validasi);
+          localStorage.setItem("time_wait", data.time_wait);
+          mainView.router.navigate('/postregister/', {
+            clearPreviousHistory: true
+          });
+        }
+        else {
+          app.dialog.alert('Register error:', data);
+        }
+      });
+    }
+  });
+});
+
+//=================================================//
+// Load data untuk halaman postregister.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="postregister"]', function(e) {
+
+  var monthNames = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus' , 'September' , 'Oktober', 'November', 'Desember'];
+  var dayNamesShort = ['Min', 'Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab'];
+
+  var calendarTglLahir = app.calendar.create({
+    inputEl: '#tgl_lahir',
+    closeOnSelect: true,
+    weekHeader: true,
+    dateFormat: 'yyyy-mm-dd',
+    dayNamesShort: dayNamesShort,
+    monthNames: monthNames
+  });
+
+  var email = localStorage.getItem("email");
+
+  app.dialog.alert('Kode validasi telah dikirim alamat email anda. Silahkan cek.');
+
+  app.request.post(apiUrl + 'apam/', {
+    action: "postregister",
+    email: email,
+    token: token
+  }, function (data) {
+    data = JSON.parse(data);
+
+    $$('.nama_lengkap').val(data['nama_lengkap']);
+    $$('.email').val(data['email']);
+    $$('.nomor_ktp').val(data['nomor_ktp']);
+    $$('.nomor_telepon').val(data['nomor_telepon']);
+
+    $$('.page[data-name="postregister"] .saveregister-btn').on('click', function () {
+      var kode_validasi = $$('#postregister-form .kode_validasi').val();
+      var nm_pasien = $$('#postregister-form .nama_lengkap').val();
+      var email = $$('#postregister-form .email').val();
+      var no_ktp = $$('#postregister-form .nomor_ktp').val();
+      var no_tlp = $$('#postregister-form .nomor_telepon').val();
+      var tgl_lahir = $$('#postregister-form .tgl_lahir').val();
+      var alamat = $$('#postregister-form .alamat').val();
+      var jk = $$('#postregister-form .jk').val();
+
+      if(kode_validasi == localStorage.getItem("kode_validasi")) {
+        app.dialog.preloader("Menghubungkan ke server...");
+        app.request.post(apiUrl + 'apam/', {
+          action: "saveregister",
+          kode_validasi: kode_validasi,
+          nm_pasien: nm_pasien,
+          email: email,
+          no_ktp: no_ktp,
+          no_tlp: no_tlp,
+          tgl_lahir: tgl_lahir,
+          alamat: alamat,
+          jk: jk,
+          token: token
+        }, function (data) {
+          //console.log(data);
+          app.dialog.close();
+          data = JSON.parse(data);
+          if(data.state == "invalid") {
+            app.dialog.alert('Gagal menimpan data pendaftaran. Silahkan ulangi lagi.');
+          }
+          else if(data.state == "valid") {
+            localStorage.removeItem("email");
+            localStorage.removeItem("kode_validasi");
+            localStorage.removeItem("time_wait");
+            localStorage.setItem("no_rkm_medis", data.no_rkm_medis);
+            mainView.router.navigate('/home/', {
+              clearPreviousHistory: true
+            });
+          }
+          else {
+            app.dialog.alert('Register error:', data);
+          }
+        });
+      } else {
+        app.dialog.alert('Kode validasi salah. Silahkan cek di email anda.');
+      }
+    });
+
+  });
+
 });
 
 //=================================================//
@@ -770,6 +915,90 @@ $$(document).on('page:init', '.page[data-name="dokter"]', function(e) {
     }
 
     $$(".dokter-list").html(html);
+
+  });
+
+});
+
+//=================================================//
+// Load data untuk halaman riwayat-list.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="riwayatlist"]', function(e) {
+
+  var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+
+  //Getting Dokter list
+  app.dialog.preloader('Loading...');
+  app.request.post(apiUrl + 'apam/', {
+    action: 'riwayat',
+    no_rkm_medis: no_rkm_medis,
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<li>';
+      html += ' <a href="/riwayat/' + no_rkm_medis + '/' + data[i]['tgl_registrasi'] + '/' + data[i]['no_reg'] + '/" class="item-link item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title-row">';
+      html += '    <div class="item-title">';
+      html += '     <div class="item-header">' + data[i]['tgl_registrasi'] + '</div>';
+      html += '     ' + data[i]['nm_poli'] + '';
+      html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
+      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
+      html += '    </div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </a>';
+      html += '</li>';
+    }
+
+    $$(".riwayat-list").html(html);
+
+  });
+
+});
+
+//=================================================//
+// Load data untuk halaman riwayat-list.html               //
+//=================================================//
+
+$$(document).on('page:init', '.page[data-name="riwayatranaplist"]', function(e) {
+
+  var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+
+  //Getting Dokter list
+  app.dialog.preloader('Loading...');
+  app.request.post(apiUrl + 'apam/', {
+    action: 'riwayatranap',
+    no_rkm_medis: no_rkm_medis,
+    token: token
+  }, function (data) {
+    app.dialog.close();
+    data = JSON.parse(data);
+
+    var html = '';
+    for(i=0; i<data.length; i++) {
+      html += '<li>';
+      html += ' <a href="/riwayatranap/' + no_rkm_medis + '/' + data[i]['tgl_registrasi'] + '/' + data[i]['no_reg'] + '/" class="item-link item-content">';
+      html += '  <div class="item-inner">';
+      html += '   <div class="item-title-row">';
+      html += '    <div class="item-title">';
+      html += '     <div class="item-header">' + data[i]['tgl_registrasi'] + '</div>';
+      html += '     ' + data[i]['nm_bangsal'] + '';
+      html += '     <div class="item">' + data[i]['nm_dokter'] + '</div>';
+      html += '     <div class="">' + data[i]['png_jawab'] + '</div>';
+      html += '    </div>';
+      html += '   </div>';
+      html += '  </div>';
+      html += ' </a>';
+      html += '</li>';
+    }
+
+    $$(".riwayatranap-list").html(html);
 
   });
 
