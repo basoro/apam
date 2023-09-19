@@ -1,122 +1,69 @@
 <div class="page" data-name="signin">
-  <div class="page-content account-area">
-    <div class="logo">
-			<img src="img/logo.png" alt=""/>
-		</div>
-    <div class="login-screen-title nama-instansi" style="font-size:24px !important;"></div>
-    <div class="tabs-swipeable-wrap">
-			<div class="tabs ">
-				<div id="tab-1" class="tab tab-active form-elements tabs tabs-animated-wrap">
-					<div class="block tab tab-active" id="tabA1" >
-            <h5 class="dz-title text-align-center">Silahkan login dengan mengisikan nomor kartu berobat dan nomor KTP anda sebagai kata kunci. Jika mengalami kesulitan silahkan hubungi petugas di Rumah Sakit.</h5>
-            <div class="list" id="signin-form">
-              <ul>
-                <li class="item-content item-input item-input-with-value">
-                  <div class="item-inner">
-                    <div class="item-input-wrap">
-                      <input type="text" placeholder="Nomor Rekam Medik" id="no_rkm_medis" class="form-control text-align-center no_rkm_medis"/>
-                    </div>
-                  </div>
-                </li>
-                <li class="item-content item-input">
-                  <div class="item-inner">
-                    <div class="item-input-wrap text-align-center">
-                      <input type="password" placeholder="Kata Kunci" id="password" class="form-control text-align-center no_ktp"/>
+    <div class="page-content account-area">
+		<div class="container">
+			<div class="logo flex-logo">
+        <img src="img/logo.png" class="logo-icon" alt="logo">
+				<h2 class="logo-text">APAM</h2>
+			</div>
+			<div class="tabs">
+				<div class="tab tab-active form-elements tabs">
+					<div class="tab tab-active" id="tabA1">
+						<div class="title-head">
+							<h4 class="title nama-instansi"></h4>
+							<p>Silahkan login dengan mengisikan nomor kartu berobat dan nomor KTP anda sebagai kata kunci. Jika mengalami kesulitan silahkan hubungi petugas di Rumah Sakit.</p>
+						</div>
+						<div class="list" id="signin-form">
+							<ul class="row">
+								<li class="item-content item-input col-100 item-input-with-value">
+									<div class="item-inner">
+										<div class="item-input-wrap">
+											<input type="number" placeholder="Nomor Rekam Medik" id="no_rkm_medis" class="form-control no_rkm_medis" value="000001"/>
+										</div>
+									</div>
+								</li>
+								<li class="item-content item-input col-100">
+									<div class="item-inner">
+										<div class="item-input-wrap mb-0">
+                      <input type="password" placeholder="Kata Kunci" id="password" class="form-control no_ktp" value="0"/>
                       <div style="display:inline;float:right;position:relative;top:-40px;right:20px;" onclick="if (password.type == 'text') { password.type = 'password'; eye.src='img/melek.png'; } else { password.type = 'text'; eye.src='img/merem.png'; }"><img src="img/melek.png" id="eye"></div>
-                    </div>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="list">
-              <ul>
-                <li><button class="button-large button button-fill signin-btn">SIGN IN</button></li>
-              </ul>
-            </div>
-            <!--
-            <div class="list">
-              <p class="text-align-center">Lupa kata kunci? <a href="#tabA3"  data-route-tab-id="tabA3" class="fw6 tab-link">Atur ulang</a></p>
-            </div>
-            -->
-            <div class="list">
-							<a href="#tabA2"  data-route-tab-id="tabA2" class="button-large button button-outline tab-link">DAFTAR PASIEN BARU</a>
-						</div>
-          </div>
-          <div class="block tab" id="tabA2">
-						<h3 class="dz-title">Mendaftar sebagai pasien baru</h3>
-						<div class="list" id="register-form">
-							<ul>
-                <li class="item-content item-input item-input-with-value">
-									<div class="item-inner">
-										<div class="item-input-wrap">
-											<input type="text" placeholder="Nama Lengkap" id="nama_lengkap" class="form-control nama_lengkap"/>
-										</div>
-									</div>
-								</li>
-								<li class="item-content item-input item-input-with-value">
-									<div class="item-inner">
-										<div class="item-input-wrap">
-											<input type="email" placeholder="Alamat Email" id="email" class="form-control email"/>
-										</div>
-									</div>
-								</li>
-                <li class="item-content item-input item-input-with-value">
-									<div class="item-inner">
-										<div class="item-input-wrap">
-											<input type="text" placeholder="Nomor KTP" id="nomor_ktp" class="form-control nomor_ktp"/>
-										</div>
-									</div>
-								</li>
-								<li class="item-content item-input">
-									<div class="item-inner">
-										<div class="item-input-wrap">
-											<input type="text" placeholder="Nomor Telepon" id="nomor_telepon" class="form-control nomor_telepon"/>
 										</div>
 									</div>
 								</li>
 							</ul>
 						</div>
-						<div class="list">
-							<ul>
-								<li><button type="button" class="button-large button button-fill register-btn">DAFTARKAN SAYA</button></li>
-							</ul>
+						<div class="clearfix">
+							<button class="button-large button button-fill signin-btn">LOG MASUK</button>
+							<p class="form-text">Lupa kata kunci anda? <a href="#tabA2" data-route-tab-id="tabA2" class="tab-link">Hubungi petugas!</a></p>
 						</div>
-            <!--
-						<div class="list">
-							<p class="text-align-center">Lupa kata kunci? <a href="#tabA3"  data-route-tab-id="tabA3" class="fw6 tab-link">Atur ulang</a></p>
-							<div class="social-account">
-								<p class="fs-14 fw3 text-align-center">Sudah terdaftar sebagai pasien</p>
-							</div>
-						</div>
-            -->
-						<div class="list">
-							<a href="#tabA1"  data-route-tab-id="tabA1" class="button-large button button-outline tab-link">SIGN IN</a>
+						<div class="text-align-center account-footer">
+							<p class="mt-0">Belum terdaftar sebagai pasien?</p>
+							<a href="/signup/" class="button-large button button-fill color-light">DAFTAR PASIEN BARU</a>
 						</div>
 					</div>
-					<div class="block tab" id="tabA3">
-						<h3 class="dz-title">Lupa Kata Kunci</h3>
+
+					<div class="tab" id="tabA2">
+						<div class="title-head">
+							<h4 class="title">Lupa Passowrd</h4>
+							<p>Silahkan hubungi petugas resepsionis di loby Rumah Sakit atau hubungi nomor berikut.</p>
+						</div>
 						<div class="list">
 							<ul>
 								<li class="item-content item-input item-input-with-value">
 									<div class="item-inner">
-										<div class="item-input-wrap">
-											<input type="email" placeholder="Alamat Email" id="demo-username-25" class="form-control"/>
+										<div class="item-input-wrap mb-0">
+											<h3 class="titel">0852-4980-8800</h3>
 										</div>
 									</div>
 								</li>
+								<li></li>
 							</ul>
 						</div>
-						<div class="list">
-							<ul>
-								<li><a href="/home/" class="button-large button button-fill">SUBMIT</a></li>
-							</ul>
-						</div>
-						<div class="list">
-							<p>Masuk ke akun anda. <a href="#tabA1"  data-route-tab-id="tabA1" class="fw6 tab-link">Login disini</a></p>
+						<div class="clearfix">
+							<p class="form-text">Masuk ke akun anda, silahkan <a href="#tabA1"  data-route-tab-id="tabA1" class="tab-link">Login Disini</a></p>
 						</div>
 					</div>
-        </div>
-      </div>
+				</div>
+			</div>
+		</div>
     </div>
-  </div>
 </div>

@@ -24,12 +24,24 @@ routes = [
     url: './pages/home.html',
   },
   {
-    path: '/blog/',
-    url: './pages/blog.html',
+    path: '/akun/',
+    url: './pages/akun.html',
   },
   {
-    path: '/blog/:id/',
-    url: './pages/blog-detail.html',
+    path: '/signup/',
+    url: './pages/signup.html',
+  },
+  {
+    path: '/color-themes/',
+    componentUrl: './pages/color-themes.html',
+  },
+  {
+    path: '/news/',
+    url: './pages/news.html',
+  },
+  {
+    path: '/news/:id/',
+    url: './pages/news-detail.html',
   },
   {
     path: '/daftar/',
@@ -68,8 +80,16 @@ routes = [
     url: './pages/pengaduan-detail.html',
   },
   {
+    path: '/booking/',
+    url: './pages/booking.html',
+  },
+  {
     path: '/booking/:no_rkm_medis/:tanggal_periksa/:no_reg/',
     url: './pages/booking-detail.html',
+  },
+  {
+    path: '/billing/',
+    url: './pages/billing.html',
   },
   {
     path: '/riwayat/',
@@ -101,6 +121,18 @@ routes = [
   {
     path: '/notifikasi/',
     url: './pages/notifikasi.html',
+  },
+  {
+    path: '/telemedicine/',
+    url: './pages/telemedicine.html',
+  },
+  {
+    path: '/telemedicine/:no_rkm_medis/:tanggal/:kd_poli/:nm_poli/:kd_dokter/:nm_dokter/:biaya/',
+    url: './pages/telemedicine-daftar.html',
+  },
+  {
+    path: '/telemedicine-sukses/',
+    url: './pages/telemedicine-sukses.html',
   },
   // Color Themes
   {

@@ -1,132 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" class="">
+<html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, viewport-fit=cover">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, viewport-fit=cover">
 	<meta name="apple-mobile-web-app-capable" content="yes">
 	<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-	<meta name="theme-color" content="#9237e3">
+	<meta name="theme-color" content="#2196f3">
 	<meta http-equiv="Content-Security-Policy" content="default-src * 'self' 'unsafe-inline' 'unsafe-eval' data: gap:">
-	<title>APAM App</title>
 
-	<link rel="stylesheet" href="css/framework7.bundle.min.css">
+	<title>APAM Barabai - Aplikasi Pasien dan Aduan Masyarakat di RSUD H. Damanhuri Barabai</title>
+
+	<!-- Framework7 css -->
+	<link rel="stylesheet" href="css/framework7-bundle.min.css">
 	<link rel="stylesheet" href="css/app.css">
 
-	<link rel="stylesheet" href="css/font-awesome/css/font-awesome.min.css">
+	<!-- Fonts -->
+	<link rel="stylesheet" href="css/font-awesome/css/all.min.css">
 	<link rel="stylesheet" href="css/line-awesome/css/line-awesome.min.css">
 
+	<!-- style css -->
 	<link rel="stylesheet" href="css/style.css">
 
-
+	<!-- Favicon -->
 	<link rel="apple-touch-icon" href="img/logo.png">
 	<link rel="icon" href="img/logo.png">
 
-
-	<link rel="preconnect" href="https://fonts.gstatic.com">
+	<!-- Google Fonts -->
 	<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
 
-</head>
-<body class="">
-  <div id="app">
-    <div class="panel panel-left panel-reveal panel-resizable panel-init sidebar-left">
-		<div class="page" data-name="landing">
-			<div class="page-content">
 
-				<div class="sidebar-logo">
-					<a href="/home/"><img src="img/logo-2.png" alt=""/></a>
-					<a href="/home/" class="panel-close">&times;</a>
-				</div>
-				<!-- <a href="#" data-panel="right" class="panel-open">Right Panel</a> -->
-				<div class="nav-bar">
-					<ul>
-						<li class="active"><a href="/home/"><i class="fa fa-home"></i>Home</a></li>
-						<li><a href="/notifikasi/"><i class="fa fa-bell"></i>Notifikasi (<span class="notifikasi"></span>)</a></li>
-						<li><a href="/pengaduan/"><i class="fa fa-envelope"></i>Pengaduan</a></li>
-						<li><a href="/profil/"><i class="fa fa-user-circle"></i>Profile</a></li>
-						<li><a href="/panduan/"><i class="fa fa-question-circle"></i>Panduan</a></li>
-						<li><a href="/pengaturan/"><i class="fa fa-cog"></i>Settings</a></li>
-						<li><a href="" class="logout-btn"><i class="fa fa-sign-out"></i>Logout</a></li>
-					</ul>
-				</div>
-				<div class="sidebar-footer">
-					<h5 class="name"><a href="/about/">APAM</a></h5>
-					<p>Version 3.0.0</p>
-				</div>
-			</div>
-		</div>
-    </div>
-    <div class="view  view-main view-init safe-areas" data-master-detail-breakpoint="800" data-url="/">
+</head>
+<body>
+<div id="app">
+	<div class="view view-main view-init safe-areas" data-master-detail-breakpoint="800" data-url="/">
 		<div class="row no-gutters vh-100 loader-screen">
 			<div class="col align-self-center text-white text-align-center">
-				<img src="img/logo.png" alt="logo">
-				<div class="laoderhorizontal">
-					<div></div>
-					<div></div>
-					<div></div>
+				<div class="view-logo">
+					<img src="img/logo.png" alt="logo">
+					<h2 class="logo-name">APAM</h2>
+					<p class="logo-text">Aplikasi Pasien & Antrian Mandiri</p>
+					<p class="logo-text">mLITE Indonesia</p>
+				</div>
+				<div id="loading-area">
 					<div></div>
 				</div>
 			</div>
 		</div>
 		<div class="page page-onboading" data-name="home">
-			<div class="page-content pb-100">
-				<div class="onboading-logo">
-					<img src="img/logo.png" alt=""/>
-				</div>
-				<div class="my-auto">
+			<div class="page-content">
+				<div class="started-swiper-box">
 					<div data-pagination='{"el": ".swiper-pagination", "hideOnClick": true}' class="swiper-container swiper-init swiper-container-initialized swiper-container-horizontal get-started">
 						<div class="swiper-wrapper">
 							<div class="swiper-slide">
-								<div class="row">
-									<div class="color-white col-100">
-										<img src="img/job-slide1.png" alt="" class="orange-slice right-image align-self-center">
-										<h1 class="text-uppercase dz-title">Informasi Rumah Sakit</h1>
-										<p>Dapatkan informasi tentang layanan, tarif, ketersediaan kamar dan jadwal dokter </p>
+								<div class="slide-info">
+									<img class="bg-icon" src="img/svg/logo-bg.svg" alt="">
+									<div class="view-logo">
+										<img src="img/logo.png" alt="logo">
+										<h2 class="logo-name">APAM</h2>
+										<p class="logo-text">mLITE Indonesia</p>
+									</div>
+									<div class="slide-content">
+										<h4 class="dz-title">Kada Antri, Lakas Bulik, Lakas Sigar</h4>
 									</div>
 								</div>
 							</div>
 							<div class="swiper-slide">
-								<div class="row">
-									<div class="color-white col-100">
-										<img src="img/job-slide2.png" alt="" class="orange-slice right-image align-self-center">
-										<h1 class="text-uppercase dz-title">Pendaftaran Mandiri</h1>
-										<p>Anda sibuk? Atau malas antri? Silahkan lakukan pendaftaran mandiri klinik rawat jalan </p>
+								<div class="slide-info" style="background-image: url(img/background/bg1.jpg);">
+									<div class="slide-content">
+										<h4 class="dz-title">Dapatkan informasi tentang layanan, tarif, ketersediaan kamar dan jadwal dokter</h4>
 									</div>
 								</div>
 							</div>
 							<div class="swiper-slide">
-								<div class="row">
-									<div class="color-white col-100">
-										<img src="img/job-slide3.png" alt="" class="orange-slice right-image align-self-center">
-										<h1 class="text-uppercase dz-title">Biaya & Catatan Medis</h1>
-										<p>Telusuri catatan medis anda beserta besaran biaya layanan di Rumah Sakit </p>
+								<div class="slide-info" style="background-image: url(img/background/bg2.jpg);">
+									<div class="slide-content">
+										<h4 class="dz-title">Anda sibuk?<br>Atau malas antri?<br>Silahkan lakukan pendaftaran mandiri klinik rawat jalan</h4>
 									</div>
 								</div>
 							</div>
 						</div>
 						<div class="swiper-pagination"></div>
 					</div>
-			</div>
-			<a href="/panduan/" class="link icon-only text-align-center">
-				<i class="icon f7-icons if-not-md" style="font-size:30px;">question_circle_fill
-				</i>
-				<i class="icon material-icons md-only" style="font-size:30px;">help
-				</i>
-				 Panduan
-			</a>
-		</div>
-			<div class="toolbar toolbar-bottom footer-button padding">
-				<div class="col-50">
-					<a href="/signin/" class="button-large button button-fill">Lewati Saja</a>
 				</div>
+			</div>
+			<div class="toolbar toolbar-bottom container footer-button">
+				<a href="/signin/" class="button-large button button-fill text-color-black color-white" style="margin-bottom:10px;">Masuk</a>
+				<a href="/panduan/" class="button-large button button-fill text-color-black color-white">Panduan</a>
 			</div>
 		</div>
 	</div>
-  </div>
-	<script src="cordova.js"></script>
-  <script src="js/framework7.bundle.min.js"></script>
-  <script src="js/framework7.debug.js"></script>
-	<script src="js/qrcode.js"></script>
-  <script src="js/routes.js"></script>
-  <script src="js/app.js"></script>
+</div>
+<!-- script -->
+<script src="cordova.js"></script>
+<script src="js/framework7-bundle.min.js"></script>
+<script src="js/qrcode.js"></script>
+<script src="js/routes.js"></script>
+<script src="js/app.js"></script>
 </body>
 </html>
