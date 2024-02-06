@@ -17,9 +17,9 @@
     <content src="index.html" />
     <plugin name="cordova-plugin-whitelist" spec="1" />
     <plugin name="cordova-plugin-network-information" spec="2.0.1" />
-    <preference name="android-minSdkVersion" value="22" />
-    <preference name="android-targetSdkVersion" value="29"/>
-    <preference name="phonegap-version" value="cli-9.0.0" />
+    <preference name="android-minSdkVersion" value="29" />
+    <preference name="android-targetSdkVersion" value="32"/>
+    <preference name="phonegap-version" value="cli-12.0.0" />
     <preference name="StatusBarOverlaysWebView" value="true" />
     <preference name="StatusBarBackgroundColor" value="#5b2e90" />
     <preference name="StatusBarStyle" value="lightcontent" />
@@ -33,6 +33,9 @@
     <platform name="android">
         <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application">
             <application android:usesCleartextTraffic="true" />
+        </edit-config>
+        <edit-config file="app/src/main/AndroidManifest.xml" mode="merge" target="/manifest/application/activity">
+            <activity android:exported="true"/>
         </edit-config>
         <allow-intent href="market:*" />
         <icon src="res/icon/android/icon-36-ldpi.png" density="ldpi" />
