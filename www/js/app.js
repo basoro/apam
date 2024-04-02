@@ -1,8 +1,8 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
 const nama_instansi = 'mLITE Indonesia'; // Hospital Name
-const apiUrl = 'https://demo.mlite.id/api/'; // API Server URL
-const website_upload = 'https://demo.mlite.id/uploads/'; // Website Uploads Server URL
-const webapps_url = 'https://demo.mlite.id/webapps/'; // Webapps Server URL
+const apiUrl = 'http://localhost/mlite/api/'; // API Server URL
+const website_upload = 'http://localhost/mlite/uploads/'; // Website Uploads Server URL
+const webapps_url = 'http://localhost/mlite/webapps/'; // Webapps Server URL
 const token = 'qtbexUAxzqO3M8dCOo2vDMFvgYjdUEdMLVo341'; // Token code for security purpose
 const startDate = 0; // Start date of day for registration
 const endDate = 7; // End date of day for registration
@@ -100,9 +100,9 @@ if (debug == '1') {
     if (color) {
       $$('.view').addClass(color);
     }
-    document.addEventListener('resume', function(){
-      ga('send', 'pageview' , {'location' : 'http://api.rshdbarabai.com/pasien-rest/index.html' });
-    }, false);
+    // document.addEventListener('resume', function(){
+    //   ga('send', 'pageview' , {'location' : 'https://mlite.id' });
+    // }, false);
     document.addEventListener('backbutton', onBackKeyDown.bind(this), false);
     function onBackKeyDown() {
       var page = app.views.main.router.currentPageEl.dataset.name;
@@ -214,7 +214,10 @@ $$(document).on('page:init', '.page[data-name="signin"]', function(e) {
         app.dialog.close();
         data = JSON.parse(data);
 
-        if(data.state == "invalid") {
+        if(data.state == "retensi") {
+          app.dialog.alert('Data anda telah masuk ke fase Retensi dan tidak aktif. SIlahkan hubungi petugas Rumah Sakit.');
+        }
+        else if(data.state == "invalid") {
           app.dialog.alert('Nomor kartu dan/atau nomor KTP anda tidak sesuai.');
         }
         else if(data.state == "valid") {
@@ -2515,6 +2518,31 @@ $$(document).on('page:init', '.page[data-name="akun"]', function(e) {
         clearPreviousHistory: true
       });
     });
+  });
+
+  $$('.hapus-akun-btn').on('click', function () {
+
+    var no_rkm_medis = localStorage.getItem("no_rkm_medis");
+
+    app.dialog.confirm('Anda yakin ingin menghapus akun Rekam Medik anda?', function () {
+      app.request.post(apiUrl + 'apam/', {
+        action: "simpanretensirekammedik",
+        no_rkm_medis: no_rkm_medis,
+        token: token
+      }, function (data) {
+        app.dialog.close();
+        data = JSON.parse(data);
+        if(data.state == "success") {
+          app.dialog.alert('Anda telah menghapus akun Rekam Medik anda sepenuhnya dari sistem!. Silahkan tekan tombol <b>Ya</b> untuk kembali ke halaman utama.', function () {
+            localStorage.removeItem("no_rkm_medis");
+            mainView.router.navigate('/', {
+              clearPreviousHistory: true
+            });  
+          });
+        }
+      });
+    });
+
   });
 
 });
