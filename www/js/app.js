@@ -1,8 +1,8 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
 const nama_instansi = 'mLITE Indonesia'; // Hospital Name
-const apiUrl = 'http://localhost/mlite/api/'; // API Server URL
-const website_upload = 'http://localhost/mlite/uploads/'; // Website Uploads Server URL
-const webapps_url = 'http://localhost/mlite/webapps/'; // Webapps Server URL
+const apiUrl = 'https://demo.mlite.id/api/'; // API Server URL
+const website_upload = 'https://demo.mlite.id/uploads/'; // Website Uploads Server URL
+const webapps_url = 'https://demo.mlite.id/webapps/'; // Webapps Server URL
 const token = 'qtbexUAxzqO3M8dCOo2vDMFvgYjdUEdMLVo341'; // Token code for security purpose
 const startDate = 0; // Start date of day for registration
 const endDate = 7; // End date of day for registration
