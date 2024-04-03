@@ -6,3 +6,5 @@ plugins
 package-lock.json
 package.json
 .gradle
+apambarabai.*
+build.json
