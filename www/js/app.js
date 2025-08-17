@@ -21,7 +21,7 @@ if (document.location.search.indexOf('theme=') >= 0) {
 // Framework7 App main instance
 var app  = new Framework7({
   el: '#app', // App root element
-  id: 'id.mlite.apam', // App bundle ID
+  id: 'com.rshdbarabai.apam', // App bundle ID
   name: 'APAM', // App name
   dialog: {
     title: 'Peringatan',
