@@ -1,0 +1,11 @@
+{
+  "android": {
+    "release": {
+      "keystore": "keystore.jsk",
+      "storePassword": "myStorePassword",
+      "alias": "my-key-alias",
+      "password": "myKeyPassword",
+      "keystoreType": ""
+    }
+  }
+}
