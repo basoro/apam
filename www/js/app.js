@@ -1,8 +1,8 @@
 //Main configuration. Silahkan sesuaikan settingan dibawah ini sesuai. Baca komentar dibelakangnya
-const nama_instansi = 'mLITE Indonesia'; // Hospital Name
-const apiUrl = 'https://demo.mlite.id/api/'; // API Server URL
-const website_upload = 'https://demo.mlite.id/uploads/'; // Website Uploads Server URL
-const webapps_url = 'https://demo.mlite.id/webapps/'; // Webapps Server URL
+const nama_instansi = 'RSUD H. Damanhuri'; // Hospital Name
+const apiUrl = 'https://www.rshdbarabai.com/apam/api/'; // API Server URL
+const website_upload = 'https://www.rshdbarabai.com/apam/uploads/'; // Website Uploads Server URL
+const webapps_url = 'https://www.rshdbarabai.com/apam/webapps/'; // Webapps Server URL
 const token = 'qtbexUAxzqO3M8dCOo2vDMFvgYjdUEdMLVo341'; // Token code for security purpose
 const startDate = 0; // Start date of day for registration
 const endDate = 7; // End date of day for registration

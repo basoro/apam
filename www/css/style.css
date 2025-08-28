@@ -15,10 +15,10 @@ Table of Sass Contents
 
 */
 :root {
-  --f7-theme-color: #4cd964;
+  --f7-theme-color: #007aff;
   --f7-theme-color-rgb: 76,217,100;
-  --f7-theme-color-shade: #2cd048;
-  --f7-theme-color-tint: #6ee081;
+  --f7-theme-color-shade: #0066d6;
+  --f7-theme-color-tint: #298fff;
   --f7-theme-color-light: #e7f7e9;
   --f7-theme-color-white: #fff; }
 
@@ -2632,10 +2632,10 @@ h6,
 /* Theme Color */
 :root,
 .md:not([class*='color-theme']) {
-  --f7-theme-color: #4cd964;
+  --f7-theme-color: #007aff;
   --f7-theme-color-rgb: 76,217,100;
-  --f7-theme-color-shade: #2cd048;
-  --f7-theme-color-tint: #6ee081;
+  --f7-theme-color-shade: #0066d6;
+  --f7-theme-color-tint: #298fff;
   --f7-theme-color-light: #e7f7e9; }
 
 .color-theme-red {
