@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "bolt-expo-nativewind",
-    "slug": "bolt-expo-nativewind",
-    "version": "1.0.0",
+    "name": "APAM",
+    "slug": "apam",
+    "version": "4.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "simrs-mobile",
@@ -10,7 +10,7 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.basoro.bolt-expo-nativewind"
+      "bundleIdentifier": "id.mlite.apam"
     },
     "web": {
       "bundler": "metro",

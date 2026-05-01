@@ -206,7 +206,16 @@ export default function HomeScreen() {
   const [brokenArticleImages, setBrokenArticleImages] = useState<Record<string, boolean>>({});
   const [homeAvatar, setHomeAvatar] = useState<{ uri: string } | null>(null);
 
+  const isLoggedIn = !!session?.no_rkm_medis;
   const displayName = session?.nm_pasien || session?.no_rkm_medis || 'Tamu';
+  const avatarInitial = isLoggedIn
+    ? ((displayName || 'P')
+        .split(' ')
+        .filter(Boolean)
+        .slice(0, 2)
+        .map((part) => part[0]?.toUpperCase() || '')
+        .join('') || 'P')
+    : 'T';
 
   const fetchDashboardData = async () => {
     try {
@@ -328,6 +337,11 @@ export default function HomeScreen() {
 
       // Fetch avatar pasien dari personal_pasien
       try {
+        if (!session?.no_rkm_medis) {
+          setHomeAvatar(null);
+          return;
+        }
+
         const avatarRes = await api.master.list('personal_pasien', {
           page: 1,
           per_page: 1,
@@ -349,7 +363,7 @@ export default function HomeScreen() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, []);
+  }, [session?.no_rkm_medis]);
 
   const onRefresh = async () => {
     setRefreshing(true);
@@ -427,18 +441,11 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.profileSection}>
-          {homeAvatar ? (
+          {isLoggedIn && homeAvatar ? (
             <Image source={homeAvatar} style={styles.avatar} />
           ) : (
             <View style={styles.avatarFallback}>
-              <Text style={styles.avatarFallbackText}>
-                {(displayName || 'P')
-                  .split(' ')
-                  .filter(Boolean)
-                  .slice(0, 2)
-                  .map((part) => part[0]?.toUpperCase() || '')
-                  .join('') || 'P'}
-              </Text>
+              <Text style={styles.avatarFallbackText}>{avatarInitial}</Text>
             </View>
           )}
           <View style={styles.profileInfo}>
