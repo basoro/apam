@@ -94,13 +94,6 @@ docker build -t apam --build-arg EXPO_PUBLIC_API_URL=https://demo.mlite.id .
 docker run --rm -p 8080:8080 apam
 ```
 
-## Catatan Deployment Railway
-
-Agar QR code Expo mengarah ke domain publik Railway (bukan IP internal container), set environment variable berikut di dashboard Railway:
-
-- Key: `REACT_NATIVE_PACKAGER_HOSTNAME`
-- Value: domain publik aplikasi tanpa `https://`
-  - Contoh: `mobile-app-production.up.railway.app`
 
 Jika variabel ini tidak diatur, QR code bisa menunjuk IP internal yang tidak dapat diakses dari perangkat HP.
 
