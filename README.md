@@ -74,6 +74,64 @@ npm run android
 npm run ios
 ```
 
+## Compile Android dan iOS via Expo
+
+### Opsi 1: Compile lokal (native build)
+
+Gunakan opsi ini jika Anda ingin build langsung di mesin lokal.
+
+1. Generate folder native:
+
+```bash
+npx expo prebuild
+```
+
+2. Compile Android:
+
+```bash
+npx expo run:android
+```
+
+3. Compile iOS (hanya macOS + Xcode):
+
+```bash
+npx expo run:ios
+```
+
+Catatan:
+
+- Android membutuhkan Android Studio + SDK.
+- iOS membutuhkan Xcode, CocoaPods, dan simulator/perangkat iOS.
+
+### Opsi 2: Compile cloud dengan EAS Build (disarankan untuk release)
+
+1. Install dan login EAS CLI:
+
+```bash
+npm install -g eas-cli
+eas login
+```
+
+2. Inisialisasi konfigurasi EAS:
+
+```bash
+eas build:configure
+```
+
+3. Build Android (AAB/APK):
+
+```bash
+eas build -p android
+```
+
+4. Build iOS (IPA):
+
+```bash
+eas build -p ios
+```
+
+5. Download hasil build dari link output EAS setelah proses selesai.
+
 ## Scripts
 
 - `npm run dev` menjalankan Expo dev server.
