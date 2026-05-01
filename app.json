@@ -26,6 +26,15 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "159c6052-00e6-4773-8858-efb677e1d1ca"
+      }
+    },
+    "android": {
+      "package": "id.mlite.apam"
     }
   }
 }
