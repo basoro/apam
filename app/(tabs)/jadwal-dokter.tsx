@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, TextInput, Modal } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, TextInput, Modal, Platform } from 'react-native';
 import { router } from 'expo-router';
-import { ChevronLeft, ChevronRight, Search, User, Clock, MapPin, Calendar } from 'lucide-react-native';
+import { ChevronLeft, Search, User, Clock, MapPin, Calendar } from 'lucide-react-native';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuth } from '@/contexts/AuthContext';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 type DoctorScheduleItem = {
   kd_poli: string;
@@ -27,8 +28,7 @@ export default function JadwalDokterScreen() {
   const [search, setSearch] = useState('');
   const [filteredData, setFilteredData] = useState<GroupedDoctorSchedule[]>([]);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [calendarMonth, setCalendarMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [showDatePicker, setShowDatePicker] = useState(false);
   const [showLoginRequired, setShowLoginRequired] = useState(false);
 
   useEffect(() => {
@@ -55,30 +55,6 @@ export default function JadwalDokterScreen() {
     const m = String(date.getMonth() + 1).padStart(2, '0');
     const d = String(date.getDate()).padStart(2, '0');
     return `${y}-${m}-${d}`;
-  };
-
-  const formatMonthLabel = (date: Date) =>
-    new Intl.DateTimeFormat('id-ID', { month: 'long', year: 'numeric' }).format(date);
-
-  const isSameDay = (a: Date, b: Date) =>
-    a.getDate() === b.getDate() &&
-    a.getMonth() === b.getMonth() &&
-    a.getFullYear() === b.getFullYear();
-
-  const buildCalendarDays = (monthDate: Date): (Date | null)[] => {
-    const year = monthDate.getFullYear();
-    const month = monthDate.getMonth();
-    const firstDayOfMonth = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const startOffset = (firstDayOfMonth.getDay() + 6) % 7; // Senin=0
-
-    const cells: (Date | null)[] = [];
-    for (let i = 0; i < startOffset; i += 1) cells.push(null);
-    for (let day = 1; day <= daysInMonth; day += 1) {
-      cells.push(new Date(year, month, day));
-    }
-    while (cells.length % 7 !== 0) cells.push(null);
-    return cells;
   };
 
   const applyFilters = (baseData: GroupedDoctorSchedule[], searchText: string, date: Date) => {
@@ -172,10 +148,13 @@ export default function JadwalDokterScreen() {
     setFilteredData(applyFilters(data, text, selectedDate));
   };
 
-  const handlePickDate = (date: Date) => {
+  const handleDateChange = (_event: any, date?: Date) => {
+    if (Platform.OS !== 'ios') {
+      setShowDatePicker(false);
+    }
+    if (!date) return;
     setSelectedDate(date);
     setFilteredData(applyFilters(data, search, date));
-    setShowCalendar(false);
   };
 
   const handleSelectDoctor = (item: GroupedDoctorSchedule) => {
@@ -257,76 +236,21 @@ export default function JadwalDokterScreen() {
           />
           <TouchableOpacity
             style={styles.calendarInlineButton}
-            onPress={() => {
-              setCalendarMonth(new Date(selectedDate.getFullYear(), selectedDate.getMonth(), 1));
-              setShowCalendar(true);
-            }}
+            onPress={() => setShowDatePicker(true)}
           >
             <Calendar size={18} color="#2E7D32" />
           </TouchableOpacity>
         </View>
         <Text style={styles.dateFilterText}>{formatDateLabel(selectedDate)}</Text>
+        {showDatePicker && (
+          <DateTimePicker
+            value={selectedDate}
+            mode="date"
+            display={Platform.OS === 'ios' ? 'spinner' : 'default'}
+            onChange={handleDateChange}
+          />
+        )}
       </View>
-
-      <Modal visible={showCalendar} transparent animationType="fade" onRequestClose={() => setShowCalendar(false)}>
-        <View style={styles.calendarOverlay}>
-          <View style={styles.calendarCard}>
-            <View style={styles.calendarHeader}>
-              <TouchableOpacity
-                style={styles.calendarNavButton}
-                onPress={() =>
-                  setCalendarMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() - 1, 1))
-                }
-              >
-                <ChevronLeft size={18} color="#2E7D32" />
-              </TouchableOpacity>
-              <Text style={styles.calendarMonthText}>{formatMonthLabel(calendarMonth)}</Text>
-              <TouchableOpacity
-                style={styles.calendarNavButton}
-                onPress={() =>
-                  setCalendarMonth((prev) => new Date(prev.getFullYear(), prev.getMonth() + 1, 1))
-                }
-              >
-                <ChevronRight size={18} color="#2E7D32" />
-              </TouchableOpacity>
-            </View>
-
-            <View style={styles.weekDaysRow}>
-              {['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'].map((day) => (
-                <Text key={day} style={styles.weekDayText}>{day}</Text>
-              ))}
-            </View>
-
-            <View style={styles.calendarGrid}>
-              {buildCalendarDays(calendarMonth).map((date, index) => (
-                <TouchableOpacity
-                  key={`cell-${index}`}
-                  style={[
-                    styles.dayCell,
-                    date && isSameDay(date, selectedDate) ? styles.dayCellSelected : null,
-                  ]}
-                  disabled={!date}
-                  onPress={() => date && handlePickDate(date)}
-                >
-                  <Text
-                    style={[
-                      styles.dayCellText,
-                      date && isSameDay(date, selectedDate) ? styles.dayCellTextSelected : null,
-                      !date ? styles.dayCellTextDisabled : null,
-                    ]}
-                  >
-                    {date ? date.getDate() : ''}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <TouchableOpacity style={styles.calendarCloseButton} onPress={() => setShowCalendar(false)}>
-              <Text style={styles.calendarCloseText}>Tutup</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
 
       <Modal
         visible={showLoginRequired}
@@ -441,86 +365,6 @@ const styles = StyleSheet.create({
     color: '#2E7D32',
     fontWeight: '700',
     textAlign: 'center',
-  },
-  calendarOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.35)',
-    justifyContent: 'center',
-    paddingHorizontal: 24,
-  },
-  calendarCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 16,
-    padding: 14,
-  },
-  calendarHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginBottom: 10,
-  },
-  calendarNavButton: {
-    width: 34,
-    height: 34,
-    borderRadius: 9,
-    backgroundColor: '#E8F5E9',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  calendarMonthText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#2E7D32',
-  },
-  weekDaysRow: {
-    flexDirection: 'row',
-    marginBottom: 8,
-  },
-  weekDayText: {
-    flex: 1,
-    textAlign: 'center',
-    fontSize: 12,
-    color: '#6B7280',
-    fontWeight: '700',
-  },
-  calendarGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-  },
-  dayCell: {
-    width: '14.2857%',
-    aspectRatio: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderRadius: 10,
-  },
-  dayCellSelected: {
-    backgroundColor: '#62B986',
-  },
-  dayCellText: {
-    fontSize: 13,
-    color: '#111827',
-    fontWeight: '600',
-  },
-  dayCellTextSelected: {
-    color: '#FFFFFF',
-    fontWeight: '700',
-  },
-  dayCellTextDisabled: {
-    color: '#D1D5DB',
-  },
-  calendarCloseButton: {
-    marginTop: 10,
-    alignSelf: 'flex-end',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    borderRadius: 8,
-    backgroundColor: '#EEF2F7',
-  },
-  calendarCloseText: {
-    color: '#374151',
-    fontWeight: '700',
-    fontSize: 12,
   },
   loginOverlay: {
     flex: 1,

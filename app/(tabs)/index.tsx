@@ -205,6 +205,7 @@ export default function HomeScreen() {
   const [todayDoctors, setTodayDoctors] = useState<HomeDoctor[]>([]);
   const [brokenArticleImages, setBrokenArticleImages] = useState<Record<string, boolean>>({});
   const [homeAvatar, setHomeAvatar] = useState<{ uri: string } | null>(null);
+  const [unreadNotifications, setUnreadNotifications] = useState(0);
 
   const isLoggedIn = !!session?.no_rkm_medis;
   const displayName = session?.nm_pasien || session?.no_rkm_medis || 'Tamu';
@@ -356,6 +357,25 @@ export default function HomeScreen() {
         setHomeAvatar(null);
       }
 
+      // Fetch notifikasi unread untuk badge beranda
+      try {
+        if (!session?.no_rkm_medis) {
+          setUnreadNotifications(0);
+        } else {
+          const notifRes = await api.master.list('mlite_notifications', {
+            page: 1,
+            per_page: 100,
+            s: session.no_rkm_medis,
+            col: 'no_rkm_medis',
+          });
+          const rows = ((notifRes.data as any)?.data || []) as any[];
+          const unreadCount = rows.filter((item) => String(item?.status || '').toLowerCase() !== 'read').length;
+          setUnreadNotifications(unreadCount);
+        }
+      } catch {
+        setUnreadNotifications(0);
+      }
+
     } catch (error) {
       console.error('Error fetching dashboard data:', error);
     }
@@ -434,9 +454,15 @@ export default function HomeScreen() {
       <View style={styles.headerContainer}>
         <View style={styles.headerTop}>
           <Text style={styles.headerTitle}>Beranda</Text>
-          <TouchableOpacity style={styles.notificationButton}>
+          <TouchableOpacity style={styles.notificationButton} onPress={() => router.push('/(tabs)/notifikasi')}>
             <Bell size={24} color="#000" />
-            <View style={styles.notificationBadge} />
+            {unreadNotifications > 0 && (
+              <View style={styles.notificationBadge}>
+                <Text style={styles.notificationBadgeText}>
+                  {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                </Text>
+              </View>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -612,12 +638,20 @@ const styles = StyleSheet.create({
   },
   notificationBadge: {
     position: 'absolute',
-    top: 0,
-    right: 0,
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#000', // Black dot as in design? Or red. Design looks like black bell.
+    top: -4,
+    right: -8,
+    minWidth: 16,
+    height: 16,
+    paddingHorizontal: 4,
+    borderRadius: 8,
+    backgroundColor: '#EF4444',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  notificationBadgeText: {
+    color: '#FFFFFF',
+    fontSize: 9,
+    fontWeight: '800',
   },
   profileSection: {
     flexDirection: 'row',

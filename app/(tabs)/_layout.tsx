@@ -211,6 +211,12 @@ export default function TabLayout() {
           href: null,
         }}
       />
+      <Tabs.Screen
+        name="notifikasi"
+        options={{
+          href: null,
+        }}
+      />
     </Tabs>
   );
 }
