@@ -6,6 +6,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { BlurView } from 'expo-blur';
 
 type MasterDataState = {
   poliklinik: any[];
@@ -548,6 +549,12 @@ export default function DaftarScreen() {
           )}
           <View style={{ height: 100 }} />
         </ScrollView>
+        <BlurView
+          intensity={30}
+          tint="light"
+          style={styles.bottomBlurOverlay}
+          experimentalBlurMethod="dimezisBlurView"
+        />
       </View>
     );
   }
@@ -740,6 +747,12 @@ export default function DaftarScreen() {
             </View>
           </View>
         </Modal>
+        <BlurView
+          intensity={30}
+          tint="light"
+          style={styles.bottomBlurOverlay}
+          experimentalBlurMethod="dimezisBlurView"
+        />
       </View>
     );
   }
@@ -791,6 +804,12 @@ export default function DaftarScreen() {
           </Text>
         </View>
       </ScrollView>
+      <BlurView
+        intensity={30}
+        tint="light"
+        style={styles.bottomBlurOverlay}
+        experimentalBlurMethod="dimezisBlurView"
+      />
     </View>
   );
 }
@@ -799,6 +818,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  bottomBlurOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 45,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    pointerEvents: 'none',
   },
   header: {
     paddingTop: 60,

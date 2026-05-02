@@ -4,6 +4,7 @@ import { ChevronLeft, Search, DoorOpen, CreditCard, Layers, UserX, UserCheck } f
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 export default function KamarScreen() {
   const [loading, setLoading] = useState(true);
@@ -150,6 +151,12 @@ export default function KamarScreen() {
           )}
         />
       )}
+      <BlurView
+        intensity={30}
+        tint="light"
+        style={styles.bottomBlurOverlay}
+        experimentalBlurMethod="dimezisBlurView"
+      />
     </View>
   );
 }
@@ -159,12 +166,23 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#F5F5F5',
   },
+  bottomBlurOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 45,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    pointerEvents: 'none',
+  },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 24,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
   },
   backButton: {
     width: 40,
@@ -182,6 +200,9 @@ const styles = StyleSheet.create({
   },
   searchContainer: {
     padding: 16,
+    marginTop: 16,
+    marginHorizontal: 16,
+    borderRadius: 12,
     backgroundColor: '#FFF',
     borderBottomWidth: 1,
     borderBottomColor: '#EEE',

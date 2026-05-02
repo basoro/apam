@@ -1,5 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, RefreshControl, Dimensions } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import { Stethoscope, ClipboardList, Users, Bed, Calendar, ChevronRight, Bell, Beaker, Radiation, Pill, LayoutGrid, CalendarDays, History, Hotel, UserPlus } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { Ionicons, MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
@@ -443,13 +444,14 @@ export default function HomeScreen() {
   ];
 
   return (
-    <ScrollView
-      style={styles.container}
-      showsVerticalScrollIndicator={false}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#62B986" />
-      }
-    >
+    <View style={styles.screenContainer}>
+      <ScrollView
+        style={styles.container}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#62B986" />
+        }
+      >
       {/* Green Header Section */}
       <View style={styles.headerContainer}>
         <View style={styles.headerTop}>
@@ -604,15 +606,35 @@ export default function HomeScreen() {
         )}
       </View>
 
-      <View style={{ height: 100 }} />
-    </ScrollView>
+        <View style={{ height: 120 }} />
+      </ScrollView>
+      <BlurView
+        intensity={30}
+        tint="light"
+        style={styles.bottomBlurOverlay}
+        experimentalBlurMethod="dimezisBlurView"
+      />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screenContainer: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  bottomBlurOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 45,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    pointerEvents: 'none',
   },
   headerContainer: {
     backgroundColor: '#62B986',

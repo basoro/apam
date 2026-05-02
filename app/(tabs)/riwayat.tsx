@@ -5,6 +5,7 @@ import { useAuth } from '@/contexts/AuthContext';
 import { ChevronLeft, Calendar, User, MapPin, Activity, Clock, DoorOpen, BedDouble, ArrowRight, CheckCircle2 } from 'lucide-react-native';
 import { api } from '@/lib/api';
 import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 
 export default function RiwayatScreen() {
   const { session, loading: authLoading } = useAuth();
@@ -232,6 +233,12 @@ export default function RiwayatScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <ActivityIndicator size="large" color="#62B986" />
+        <BlurView
+          intensity={30}
+          tint="light"
+          style={styles.bottomBlurOverlay}
+          experimentalBlurMethod="dimezisBlurView"
+        />
       </View>
     );
   }
@@ -256,6 +263,12 @@ export default function RiwayatScreen() {
             <Text style={styles.actionButtonText}>Ke Halaman Login</Text>
           </TouchableOpacity>
         </View>
+        <BlurView
+          intensity={30}
+          tint="light"
+          style={styles.bottomBlurOverlay}
+          experimentalBlurMethod="dimezisBlurView"
+        />
       </View>
     );
   }
@@ -314,6 +327,12 @@ export default function RiwayatScreen() {
           )}
         />
       )}
+      <BlurView
+        intensity={30}
+        tint="light"
+        style={styles.bottomBlurOverlay}
+        experimentalBlurMethod="dimezisBlurView"
+      />
     </View>
   );
 }
@@ -322,6 +341,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  bottomBlurOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 45,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    pointerEvents: 'none',
   },
   center: {
     flex: 1,
@@ -385,7 +413,7 @@ const styles = StyleSheet.create({
   },
   listContainer: {
     padding: 16,
-    paddingBottom: 40,
+    paddingBottom: 100,
   },
   card: {
     backgroundColor: '#FFF',

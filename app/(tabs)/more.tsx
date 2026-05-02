@@ -2,6 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Dimensions } from
 import { router } from 'expo-router';
 import { ChevronLeft, Stethoscope, ClipboardList, Bed, Beaker, Radiation, Pill, LayoutGrid, CalendarDays, History } from 'lucide-react-native';
 import { MaterialCommunityIcons, FontAwesome5 } from '@expo/vector-icons';
+import { BlurView } from 'expo-blur';
 
 const { width } = Dimensions.get('window');
 
@@ -68,6 +69,12 @@ export default function MoreScreen() {
           ))}
         </View>
       </ScrollView>
+      <BlurView
+        intensity={30}
+        tint="light"
+        style={styles.bottomBlurOverlay}
+        experimentalBlurMethod="dimezisBlurView"
+      />
     </View>
   );
 }
@@ -76,6 +83,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFFFFF',
+  },
+  bottomBlurOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 45,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    pointerEvents: 'none',
   },
   header: {
     flexDirection: 'row',

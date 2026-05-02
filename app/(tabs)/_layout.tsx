@@ -1,5 +1,5 @@
 import { Tabs } from 'expo-router';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Platform } from 'react-native';
 import { Home, Stethoscope, ScanLine, ClipboardList, User, CalendarDays, History, UserPlus } from 'lucide-react-native';
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
@@ -89,7 +89,7 @@ export default function TabLayout() {
           borderRadius: 35, // Fully rounded ends (half of height)
           paddingBottom: 0, // Reset padding
           paddingTop: 0,    // Reset padding
-          backgroundColor: 'transparent', // Transparent so blur background is visible
+          backgroundColor: '#FFFFFF', // Transparent for glass effect
           borderTopWidth: 0,
           shadowColor: '#000',
           shadowOffset: {
@@ -99,19 +99,6 @@ export default function TabLayout() {
           shadowOpacity: 0.1,
           shadowRadius: 10,
         },
-        tabBarBackground: () => (
-          <BlurView
-            intensity={90}
-            style={{
-              ...StyleSheet.absoluteFillObject,
-              borderRadius: 35, // Match tabBarStyle borderRadius
-              overflow: 'hidden',
-              backgroundColor: 'rgba(255,255,255,0.5)',
-            }}
-            tint="light"
-            experimentalBlurMethod="dimezisBlurView"
-          />
-        ),
         tabBarShowLabel: true, // Keep labels
         tabBarItemStyle: {
           justifyContent: 'center',

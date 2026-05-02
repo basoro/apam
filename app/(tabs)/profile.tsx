@@ -7,6 +7,7 @@ import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import * as ImagePicker from 'expo-image-picker';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { BlurView } from 'expo-blur';
 
 const resolvePersonalPhoto = (photoValue: string): string | null => {
   const normalized = photoValue.replace(/\\/g, '/').trim();
@@ -416,6 +417,12 @@ export default function ProfileScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <ActivityIndicator size="large" color="#62B986" />
+        <BlurView
+          intensity={30}
+          tint="light"
+          style={styles.bottomBlurOverlay}
+          experimentalBlurMethod="dimezisBlurView"
+        />
       </View>
     );
   }
@@ -440,6 +447,12 @@ export default function ProfileScreen() {
             <Text style={styles.actionButtonText}>Ke Halaman Login</Text>
           </TouchableOpacity>
         </View>
+        <BlurView
+          intensity={30}
+          tint="light"
+          style={styles.bottomBlurOverlay}
+          experimentalBlurMethod="dimezisBlurView"
+        />
       </View>
     );
   }
@@ -486,7 +499,11 @@ export default function ProfileScreen() {
         </View>
       </LinearGradient>
 
-      <ScrollView style={styles.content} contentContainerStyle={styles.contentContainer}>
+      <ScrollView
+        style={styles.content}
+        contentContainerStyle={styles.contentContainer}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Informasi Rekam Medis</Text>
           <View style={styles.infoCard}>
@@ -631,6 +648,12 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
+      <BlurView
+        intensity={30}
+        tint="light"
+        style={styles.bottomBlurOverlay}
+        experimentalBlurMethod="dimezisBlurView"
+      />
     </View>
   );
 }
@@ -639,6 +662,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#F5F5F5',
+  },
+  bottomBlurOverlay: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 40,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    pointerEvents: 'none',
   },
   center: {
     justifyContent: 'center',
