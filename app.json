@@ -8,6 +8,9 @@
     "scheme": "simrs-mobile",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
+    "splash": {
+      "backgroundColor": "#62B986"
+    },
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "id.mlite.apam"
