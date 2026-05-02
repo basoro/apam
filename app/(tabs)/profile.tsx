@@ -180,21 +180,89 @@ export default function ProfileScreen() {
       let lastUploadError = '';
       let finalSavedAvatar = '';
       const fields = ['file', 'webcam', 'photo', 'foto', 'gambar'];
+      const rawUrl = `${(process.env.EXPO_PUBLIC_API_URL || '').replace(/\/$/, '')}/admin/api/master/save/personal_pasien`;
+      const token = await AsyncStorage.getItem('auth_token');
+      const authUsername = (await AsyncStorage.getItem('auth_username')) || '';
+      const authPassword = (await AsyncStorage.getItem('auth_password')) || '';
+
+      const buildUploadFormData = (field: string) => {
+        const formData = new FormData();
+        formData.append('no_rkm_medis', session.no_rkm_medis);
+        if (Platform.OS === 'web' && webFile) {
+          formData.append(field, webFile, fileName);
+        } else {
+          formData.append(field, {
+            uri,
+            name: fileName,
+            type: mimeType,
+          } as any);
+        }
+        return formData;
+      };
+
+      const tryRawUploadFallback = async (field: string, formData: FormData) => {
+        const rawRes = await fetch(rawUrl, {
+          method: 'POST',
+          headers: {
+            'X-Api-Key': process.env.EXPO_PUBLIC_API_KEY || '',
+            'X-Username-Permission': process.env.EXPO_PUBLIC_API_USERNAME || '',
+            'X-Password-Permission': process.env.EXPO_PUBLIC_API_PASSWORD || '',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: formData as any,
+        });
+        const rawText = await rawRes.text();
+        let rawData: any = {};
+        try {
+          rawData = rawText ? JSON.parse(rawText) : {};
+        } catch {
+          rawData = { message: rawText };
+        }
+
+        if (rawRes.ok && isSuccessRaw(rawData)) {
+          uploadOk = true;
+          finalSavedAvatar = fileName;
+          return;
+        }
+
+        lastUploadError =
+          getResponseMessage(rawData) ||
+          `Upload gagal (${field}) [${rawRes.status}]`;
+
+        if (!authUsername || !authPassword) return;
+
+        const rawUrlWithCreds = `${rawUrl}?username=${encodeURIComponent(authUsername)}&password=${encodeURIComponent(authPassword)}`;
+        const rawResWithCreds = await fetch(rawUrlWithCreds, {
+          method: 'POST',
+          headers: {
+            'X-Api-Key': process.env.EXPO_PUBLIC_API_KEY || '',
+            'X-Username-Permission': process.env.EXPO_PUBLIC_API_USERNAME || '',
+            'X-Password-Permission': process.env.EXPO_PUBLIC_API_PASSWORD || '',
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          },
+          body: formData as any,
+        });
+        const rawTextWithCreds = await rawResWithCreds.text();
+        let rawDataWithCreds: any = {};
+        try {
+          rawDataWithCreds = rawTextWithCreds ? JSON.parse(rawTextWithCreds) : {};
+        } catch {
+          rawDataWithCreds = { message: rawTextWithCreds };
+        }
+        if (rawResWithCreds.ok && isSuccessRaw(rawDataWithCreds)) {
+          uploadOk = true;
+          finalSavedAvatar = fileName;
+        } else {
+          lastUploadError =
+            getResponseMessage(rawDataWithCreds) ||
+            `Upload gagal (${field}) [${rawResWithCreds.status}]`;
+        }
+      };
 
       for (const field of fields) {
         try {
           setUploadStatusText(`Mengunggah foto (${field})...`);
-          const formData = new FormData();
-          formData.append('no_rkm_medis', session.no_rkm_medis);
-          if (Platform.OS === 'web' && webFile) {
-            formData.append(field, webFile, fileName);
-          } else {
-            formData.append(field, {
-              uri,
-              name: fileName,
-              type: mimeType,
-            } as any);
-          }
+          const formData = buildUploadFormData(field);
           const response = await api.master.save('personal_pasien', formData, {
             headers: { 'Content-Type': undefined as any },
             onUploadProgress: (progressEvent: any) => {
@@ -211,67 +279,20 @@ export default function ProfileScreen() {
           }
           if (!uploadOk) {
             // Fallback raw fetch agar multipart tidak dipengaruhi interceptor axios.
-            const token = await AsyncStorage.getItem('auth_token');
-            const authUsername = (await AsyncStorage.getItem('auth_username')) || '';
-            const authPassword = (await AsyncStorage.getItem('auth_password')) || '';
-            const rawUrl = `${(process.env.EXPO_PUBLIC_API_URL || '').replace(/\/$/, '')}/admin/api/master/save/personal_pasien`;
-            const rawRes = await fetch(rawUrl, {
-              method: 'POST',
-              headers: {
-                'X-Api-Key': process.env.EXPO_PUBLIC_API_KEY || '',
-                'X-Username-Permission': process.env.EXPO_PUBLIC_API_USERNAME || '',
-                'X-Password-Permission': process.env.EXPO_PUBLIC_API_PASSWORD || '',
-                ...(token ? { Authorization: `Bearer ${token}` } : {}),
-              },
-              body: formData as any,
-            });
-            const rawText = await rawRes.text();
-            let rawData: any = {};
-            try {
-              rawData = rawText ? JSON.parse(rawText) : {};
-            } catch {
-              rawData = { message: rawText };
-            }
-            if (rawRes.ok && isSuccessRaw(rawData)) {
-              uploadOk = true;
-              finalSavedAvatar = fileName;
-            } else {
-              lastUploadError =
-                getResponseMessage(rawData) ||
-                `Upload gagal (${field}) [${rawRes.status}]`;
-            }
-            if (!uploadOk && authUsername && authPassword) {
-              const rawUrlWithCreds = `${rawUrl}?username=${encodeURIComponent(authUsername)}&password=${encodeURIComponent(authPassword)}`;
-              const rawResWithCreds = await fetch(rawUrlWithCreds, {
-                method: 'POST',
-                headers: {
-                  'X-Api-Key': process.env.EXPO_PUBLIC_API_KEY || '',
-                  'X-Username-Permission': process.env.EXPO_PUBLIC_API_USERNAME || '',
-                  'X-Password-Permission': process.env.EXPO_PUBLIC_API_PASSWORD || '',
-                  ...(token ? { Authorization: `Bearer ${token}` } : {}),
-                },
-                body: formData as any,
-              });
-              const rawTextWithCreds = await rawResWithCreds.text();
-              let rawDataWithCreds: any = {};
-              try {
-                rawDataWithCreds = rawTextWithCreds ? JSON.parse(rawTextWithCreds) : {};
-              } catch {
-                rawDataWithCreds = { message: rawTextWithCreds };
-              }
-              if (rawResWithCreds.ok && isSuccessRaw(rawDataWithCreds)) {
-                uploadOk = true;
-                finalSavedAvatar = fileName;
-              } else {
-                lastUploadError =
-                  getResponseMessage(rawDataWithCreds) ||
-                  `Upload gagal (${field}) [${rawResWithCreds.status}]`;
-              }
-            }
+            await tryRawUploadFallback(field, buildUploadFormData(field));
           }
           if (uploadOk) break;
         } catch (e: any) {
           lastUploadError = getResponseMessage(e?.response?.data) || e?.message || `Upload gagal pada field ${field}.`;
+          try {
+            await tryRawUploadFallback(field, buildUploadFormData(field));
+          } catch (fallbackError: any) {
+            lastUploadError =
+              getResponseMessage(fallbackError?.response?.data) ||
+              fallbackError?.message ||
+              lastUploadError;
+          }
+          if (uploadOk) break;
         }
       }
 
