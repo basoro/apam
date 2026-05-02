@@ -4,6 +4,7 @@ import { ChevronLeft, ChevronRight, Search, User, Clock, MapPin, Calendar } from
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useAuth } from '@/contexts/AuthContext';
 
 type DoctorScheduleItem = {
   kd_poli: string;
@@ -20,6 +21,7 @@ type GroupedDoctorSchedule = {
 };
 
 export default function JadwalDokterScreen() {
+  const { session } = useAuth();
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState<GroupedDoctorSchedule[]>([]);
   const [search, setSearch] = useState('');
@@ -27,6 +29,7 @@ export default function JadwalDokterScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [showCalendar, setShowCalendar] = useState(false);
   const [calendarMonth, setCalendarMonth] = useState(new Date(new Date().getFullYear(), new Date().getMonth(), 1));
+  const [showLoginRequired, setShowLoginRequired] = useState(false);
 
   useEffect(() => {
     fetchData();
@@ -176,6 +179,11 @@ export default function JadwalDokterScreen() {
   };
 
   const handleSelectDoctor = (item: GroupedDoctorSchedule) => {
+    if (!session) {
+      setShowLoginRequired(true);
+      return;
+    }
+
     const firstSchedule = item.items[0];
     router.push({
       pathname: '/(tabs)/daftar',
@@ -316,6 +324,36 @@ export default function JadwalDokterScreen() {
             <TouchableOpacity style={styles.calendarCloseButton} onPress={() => setShowCalendar(false)}>
               <Text style={styles.calendarCloseText}>Tutup</Text>
             </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+
+      <Modal
+        visible={showLoginRequired}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLoginRequired(false)}
+      >
+        <View style={styles.loginOverlay}>
+          <View style={styles.loginCard}>
+            <Text style={styles.loginTitle}>Login Diperlukan</Text>
+            <Text style={styles.loginSubtitle}>
+              Silakan login terlebih dahulu untuk memilih dokter dan melanjutkan pendaftaran pasien lama.
+            </Text>
+            <View style={styles.loginActions}>
+              <TouchableOpacity style={styles.loginCancelButton} onPress={() => setShowLoginRequired(false)}>
+                <Text style={styles.loginCancelText}>Tutup</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.loginGoButton}
+                onPress={() => {
+                  setShowLoginRequired(false);
+                  router.push('/login');
+                }}
+              >
+                <Text style={styles.loginGoText}>Ke Login</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </View>
       </Modal>
@@ -483,6 +521,54 @@ const styles = StyleSheet.create({
     color: '#374151',
     fontWeight: '700',
     fontSize: 12,
+  },
+  loginOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  loginCard: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 14,
+    padding: 18,
+  },
+  loginTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1F2937',
+    marginBottom: 8,
+  },
+  loginSubtitle: {
+    fontSize: 14,
+    color: '#4B5563',
+    lineHeight: 20,
+  },
+  loginActions: {
+    marginTop: 16,
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+  },
+  loginCancelButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderRadius: 8,
+    backgroundColor: '#F3F4F6',
+  },
+  loginCancelText: {
+    color: '#374151',
+    fontWeight: '600',
+  },
+  loginGoButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 9,
+    borderRadius: 8,
+    backgroundColor: '#62B986',
+  },
+  loginGoText: {
+    color: '#FFFFFF',
+    fontWeight: '700',
   },
   listContent: {
     padding: 16,
