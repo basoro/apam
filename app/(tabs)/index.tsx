@@ -477,7 +477,7 @@ export default function HomeScreen() {
             </View>
           )}
           <View style={styles.profileInfo}>
-            <Text style={styles.greetingText}>Hi , {displayName.toUpperCase()}</Text>
+            <Text style={styles.greetingText}>Hai, {displayName.toUpperCase()}</Text>
             <Text style={styles.welcomeText}>Selamat datang di RS Atila Medika</Text>
           </View>
         </View>
