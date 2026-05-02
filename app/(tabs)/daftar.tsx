@@ -1,9 +1,9 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView, TextInput, Alert, Platform, ActivityIndicator, Modal, FlatList } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { ClipboardCheck, X, ChevronRight, UserPlus, Calendar, User, Phone, Fingerprint, MapPin, Heart, Users, CheckCircle2, ChevronLeft } from 'lucide-react-native';
-import { useRouter } from 'expo-router';
+import { useLocalSearchParams, useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
@@ -21,6 +21,13 @@ const formatTime = (date: Date) => {
   return `${hh}:${mm}:${ss}`;
 };
 
+const formatDateLocal = (date: Date) => {
+  const y = date.getFullYear();
+  const m = String(date.getMonth() + 1).padStart(2, '0');
+  const d = String(date.getDate()).padStart(2, '0');
+  return `${y}-${m}-${d}`;
+};
+
 const normalizeDay = (value: string) => value.toLowerCase().replace(/\s+/g, '').trim();
 
 const dayAliasesByIndex: Record<number, string[]> = {
@@ -35,6 +42,14 @@ const dayAliasesByIndex: Record<number, string[]> = {
 
 export default function DaftarScreen() {
   const router = useRouter();
+  const params = useLocalSearchParams<{
+    openPasienLama?: string;
+    preselectDokter?: string;
+    preselectDokterName?: string;
+    preselectPoli?: string;
+    preselectPoliName?: string;
+    preselectTanggal?: string;
+  }>();
   const { session } = useAuth();
 
   const [showForm, setShowForm] = useState(false);
@@ -56,6 +71,7 @@ export default function DaftarScreen() {
   const [bookingError, setBookingError] = useState('');
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingSuccessMessage, setBookingSuccessMessage] = useState('');
+  const [registerNotice, setRegisterNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Form State
   const [form, setForm] = useState({
@@ -84,6 +100,80 @@ export default function DaftarScreen() {
     nm_pj: 'Pilih Cara Bayar',
   });
 
+  const getParamValue = (value: string | string[] | undefined) =>
+    Array.isArray(value) ? value[0] || '' : (value || '');
+
+  const parseDateParam = (value: string): Date | undefined => {
+    if (!value) return undefined;
+    const match = value.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (match) {
+      const year = Number(match[1]);
+      const month = Number(match[2]) - 1;
+      const day = Number(match[3]);
+      return new Date(year, month, day);
+    }
+    const parsed = new Date(value);
+    if (Number.isNaN(parsed.getTime())) return undefined;
+    return new Date(parsed.getFullYear(), parsed.getMonth(), parsed.getDate());
+  };
+
+  const handleOpenPasienLama = (prefill?: {
+    kd_dokter?: string;
+    nm_dokter?: string;
+    kd_poli?: string;
+    nm_poli?: string;
+    tgl_registrasi?: Date;
+  }) => {
+    if (!session) {
+      router.replace('/login');
+      return;
+    }
+
+    setBookingError('');
+    setBookingSuccess(false);
+    setBookingSuccessMessage('');
+    setShowFormExisting(true);
+    fetchMasterData();
+
+    if (prefill?.kd_dokter || prefill?.kd_poli) {
+      setBookingForm((prev) => ({
+        ...prev,
+        kd_dokter: prefill.kd_dokter || prev.kd_dokter,
+        nm_dokter: prefill.nm_dokter || prev.nm_dokter,
+        kd_poli: prefill.kd_poli || prev.kd_poli,
+        nm_poli: prefill.nm_poli || prev.nm_poli,
+        tgl_registrasi: prefill.tgl_registrasi || prev.tgl_registrasi,
+      }));
+    }
+  };
+
+  useEffect(() => {
+    const openPasienLama = getParamValue(params.openPasienLama);
+    if (openPasienLama !== '1') return;
+
+    const kdDokter = getParamValue(params.preselectDokter);
+    const nmDokter = getParamValue(params.preselectDokterName);
+    const kdPoli = getParamValue(params.preselectPoli);
+    const nmPoli = getParamValue(params.preselectPoliName);
+    const tglRegistrasi = parseDateParam(getParamValue(params.preselectTanggal));
+
+    handleOpenPasienLama({
+      kd_dokter: kdDokter,
+      nm_dokter: nmDokter || 'Pilih Dokter',
+      kd_poli: kdPoli,
+      nm_poli: nmPoli || 'Pilih Poliklinik',
+      tgl_registrasi: tglRegistrasi,
+    });
+  }, [
+    params.openPasienLama,
+    params.preselectDokter,
+    params.preselectDokterName,
+    params.preselectPoli,
+    params.preselectPoliName,
+    params.preselectTanggal,
+    session,
+  ]);
+
   const fetchMasterData = async () => {
     setLoadingMaster(true);
     try {
@@ -109,15 +199,7 @@ export default function DaftarScreen() {
   };
 
   const handlePasienLama = () => {
-    if (!session) {
-      router.replace('/login');
-    } else {
-      setBookingError('');
-      setBookingSuccess(false);
-      setBookingSuccessMessage('');
-      setShowFormExisting(true);
-      fetchMasterData();
-    }
+    handleOpenPasienLama();
   };
 
   const getAvailableDoctors = () => {
@@ -171,7 +253,7 @@ export default function DaftarScreen() {
         kd_poli: bookingForm.kd_poli,
         kd_dokter: bookingForm.kd_dokter,
         kd_pj: bookingForm.kd_pj,
-        tgl_registrasi: bookingForm.tgl_registrasi.toISOString().split('T')[0],
+        tgl_registrasi: formatDateLocal(bookingForm.tgl_registrasi),
         jam_reg: formatTime(new Date()),
       };
 
@@ -229,13 +311,17 @@ export default function DaftarScreen() {
   };
 
   const handleRegister = async () => {
+    setRegisterNotice(null);
+
     // Validation
     if (!form.nm_pasien || !form.no_ktp || !form.no_tlp || !form.alamat) {
+      setRegisterNotice({ type: 'error', text: 'Mohon lengkapi semua field wajib (*).' });
       Alert.alert('Error', 'Mohon lengkapi semua field wajib (*)');
       return;
     }
 
     if (form.no_ktp.length < 16) {
+      setRegisterNotice({ type: 'error', text: 'NIK harus 16 digit.' });
       Alert.alert('Error', 'NIK harus 16 digit');
       return;
     }
@@ -244,12 +330,16 @@ export default function DaftarScreen() {
     try {
       const payload = {
         ...form,
-        tgl_lahir: form.tgl_lahir.toISOString().split('T')[0],
+        tgl_lahir: formatDateLocal(form.tgl_lahir),
       };
 
       const response = await api.pasien.create(payload);
 
       if (response.data.status === 'success' || response.status === 201 || response.status === 200) {
+        setRegisterNotice({
+          type: 'success',
+          text: 'Pendaftaran pasien baru berhasil. Silakan login menggunakan NIK sebagai password.',
+        });
         Alert.alert(
           'Berhasil',
           'Pendaftaran pasien baru berhasil. Silahkan login menggunakan NIK sebagai password.',
@@ -260,6 +350,10 @@ export default function DaftarScreen() {
       }
     } catch (error: any) {
       console.error('Registration error:', error);
+      setRegisterNotice({
+        type: 'error',
+        text: error?.message || 'Terjadi kesalahan saat mendaftar.',
+      });
       Alert.alert('Error', error.message || 'Terjadi kesalahan saat mendaftar');
     } finally {
       setLoading(false);
@@ -442,6 +536,16 @@ export default function DaftarScreen() {
               </>
             )}
           </TouchableOpacity>
+          {registerNotice && (
+            <View
+              style={[
+                styles.registerNoticeBox,
+                registerNotice.type === 'success' ? styles.registerNoticeSuccess : styles.registerNoticeError,
+              ]}
+            >
+              <Text style={styles.registerNoticeText}>{registerNotice.text}</Text>
+            </View>
+          )}
           <View style={{ height: 100 }} />
         </ScrollView>
       </View>
@@ -853,6 +957,25 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontSize: 16,
     fontWeight: '700',
+  },
+  registerNoticeBox: {
+    marginTop: 10,
+    borderRadius: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
+  },
+  registerNoticeSuccess: {
+    backgroundColor: '#DCFCE7',
+  },
+  registerNoticeError: {
+    backgroundColor: '#FEE2E2',
+  },
+  registerNoticeText: {
+    fontSize: 13,
+    fontWeight: '600',
+    color: '#1F2937',
+    textAlign: 'center',
+    lineHeight: 18,
   },
   inputDisabled: {
     backgroundColor: '#F9F9F9',
