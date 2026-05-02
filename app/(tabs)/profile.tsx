@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, ActivityIndicator, Alert, Modal, TextInput, Platform } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
-import { User, Mail, Calendar, MapPin, LogOut, ChevronRight, Phone, CreditCard, Heart, Fingerprint, Camera } from 'lucide-react-native';
+import { User, Mail, Calendar, MapPin, LogOut, ChevronRight, Phone, CreditCard, Heart, Fingerprint, Camera, ChevronLeft } from 'lucide-react-native';
 import { useAuth } from '@/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -107,10 +107,10 @@ export default function ProfileScreen() {
   const router = useRouter();
 
   useEffect(() => {
-    if (!authLoading && !session) {
-      router.replace('/login');
-    } else if (session) {
+    if (session) {
       fetchProfileData();
+    } else {
+      setProfileLoading(false);
     }
   }, [session, authLoading]);
 
@@ -399,6 +399,30 @@ export default function ProfileScreen() {
     );
   }
 
+  if (!session) {
+    return (
+      <View style={styles.container}>
+        <LinearGradient colors={['#62B986', '#72C996']} style={styles.header}>
+          <View style={styles.headerTop}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ChevronLeft size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Profile</Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyTitle}>Login Diperlukan</Text>
+          <Text style={styles.emptySubtitle}>
+            Silakan login terlebih dahulu untuk melihat data profil Anda.
+          </Text>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/login')}>
+            <Text style={styles.actionButtonText}>Ke Halaman Login</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <LinearGradient
@@ -601,13 +625,19 @@ const styles = StyleSheet.create({
   },
   header: {
     paddingTop: 60,
-    paddingBottom: 32,
-    paddingHorizontal: 24,
+    paddingHorizontal: 20,
+    paddingBottom: 24,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
   },
   headerTitle: {
-    fontSize: 28,
+    fontSize: 20,
     fontWeight: '700',
-    color: '#FFFFFF',
+    color: '#FFF',
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
     marginBottom: 24,
   },
   profileCard: {
@@ -841,4 +871,56 @@ const styles = StyleSheet.create({
     color: '#FFFFFF',
     fontWeight: '700',
   },
+  backButton: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: 'rgba(255,255,255,0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 10,
+  },  
+  emptyContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingTop: 100,
+    paddingHorizontal: 50,
+  },
+  emptyImage: {
+    width: 130,
+    height: 130,
+    marginBottom: 24,
+    opacity: 0.7,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '800',
+    color: '#333',
+    marginBottom: 12,
+    textAlign: 'center',
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#666',
+    textAlign: 'center',
+    lineHeight: 20,
+    marginBottom: 32,
+  },
+  actionButton: {
+    backgroundColor: '#62B986',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 12,
+    shadowColor: '#62B986',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  actionButtonText: {
+    color: '#FFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },   
 });

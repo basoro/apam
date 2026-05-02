@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Image } from 'react-native';
 import { useEffect, useState } from 'react';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronLeft, Calendar, User, MapPin, Activity, Clock, DoorOpen, BedDouble, ArrowRight, CheckCircle2 } from 'lucide-react-native';
 import { api } from '@/lib/api';
@@ -8,6 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function RiwayatScreen() {
   const { session, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState('ralan'); // 'ralan' or 'ranap'
   const [loading, setLoading] = useState(true);
 
@@ -22,10 +23,10 @@ export default function RiwayatScreen() {
   const [wardMap, setWardMap] = useState<any>({});
 
   useEffect(() => {
-    if (!authLoading && !session) {
-      router.replace('/login');
-    } else if (session) {
+    if (session) {
       fetchData();
+    } else {
+      setLoading(false);
     }
   }, [session, authLoading]);
 
@@ -231,6 +232,30 @@ export default function RiwayatScreen() {
     return (
       <View style={[styles.container, styles.center]}>
         <ActivityIndicator size="large" color="#62B986" />
+      </View>
+    );
+  }
+
+  if (!session) {
+    return (
+      <View style={styles.container}>
+        <LinearGradient colors={['#62B986', '#72C996']} style={styles.header}>
+          <View style={styles.headerTop}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ChevronLeft size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Riwayat Medis</Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyTitle}>Login Diperlukan</Text>
+          <Text style={styles.emptySubtitle}>
+            Silakan login terlebih dahulu untuk melihat data riwayat medis Anda.
+          </Text>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/login')}>
+            <Text style={styles.actionButtonText}>Ke Halaman Login</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     );
   }
@@ -581,7 +606,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#666',
     textAlign: 'center',
-    lineHeight: 22,
-    fontWeight: '500',
+    lineHeight: 20,
+    marginBottom: 32,
   },
+  actionButton: {
+    backgroundColor: '#62B986',
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 12,
+    shadowColor: '#62B986',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  actionButtonText: {
+    color: '#FFF',
+    fontSize: 15,
+    fontWeight: '700',
+  },  
 });

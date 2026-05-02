@@ -144,6 +144,14 @@ export default function LoginScreen() {
               )}
             </TouchableOpacity>
 
+            <TouchableOpacity
+              style={[styles.homeButton, loading && styles.loginButtonDisabled]}
+              onPress={() => router.replace('/(tabs)')}
+              disabled={loading}
+            >
+              <Text style={styles.homeButtonText}>Kembali ke Beranda</Text>
+            </TouchableOpacity>
+
             <View style={styles.footer}>
               <Text style={styles.footerText}>
                 © 2026 RS Atila Medika
@@ -298,6 +306,21 @@ const styles = StyleSheet.create({
   loginButtonText: {
     color: '#FFFFFF',
     fontSize: 18,
+    fontWeight: '600',
+  },
+  homeButton: {
+    borderRadius: 12,
+    height: 52,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 12,
+    borderWidth: 1,
+    borderColor: '#62B986',
+    backgroundColor: '#FFFFFF',
+  },
+  homeButtonText: {
+    color: '#62B986',
+    fontSize: 16,
     fontWeight: '600',
   },
   footer: {

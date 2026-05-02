@@ -457,6 +457,17 @@ export default function HomeScreen() {
 
       <View style={styles.daftarCardContainer}>
         <View style={styles.daftarCard}>
+          <LinearGradient
+            colors={['#E8F8EE', '#F4FCF7']}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 1, y: 1 }}
+            style={styles.daftarCardBg}
+          />
+          <View style={styles.daftarAccentOne} />
+          <View style={styles.daftarAccentTwo} />
+          <View style={styles.daftarBadge}>
+            <Text style={styles.daftarBadgeText}>Layanan Cepat</Text>
+          </View>
           <Text style={styles.daftarTitle}>Daftar Mandiri</Text>
           <Text style={styles.daftarSubtitle}>
             Silahkan lakukan pendaftaran mandiri klinik rawat jalan.
@@ -657,11 +668,48 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFFFFF',
     borderRadius: 16,
     padding: 20,
+    overflow: 'hidden',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 8,
     elevation: 5,
+    borderWidth: 1,
+    borderColor: '#D9EFE3',
+  },
+  daftarCardBg: {
+    ...StyleSheet.absoluteFillObject,
+  },
+  daftarAccentOne: {
+    position: 'absolute',
+    right: -25,
+    top: -25,
+    width: 110,
+    height: 110,
+    borderRadius: 55,
+    backgroundColor: 'rgba(98,185,134,0.14)',
+  },
+  daftarAccentTwo: {
+    position: 'absolute',
+    left: -35,
+    bottom: -35,
+    width: 120,
+    height: 120,
+    borderRadius: 60,
+    backgroundColor: 'rgba(98,185,134,0.09)',
+  },
+  daftarBadge: {
+    alignSelf: 'flex-start',
+    backgroundColor: '#DDF4E8',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 999,
+    marginBottom: 10,
+  },
+  daftarBadgeText: {
+    color: '#2E7D32',
+    fontSize: 11,
+    fontWeight: '700',
   },
   daftarTitle: {
     fontSize: 18,
@@ -679,10 +727,15 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-end',
     backgroundColor: '#62B986',
     paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 8,
+    paddingHorizontal: 18,
+    borderRadius: 10,
     flexDirection: 'row',
     alignItems: 'center',
+    shadowColor: '#62B986',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    elevation: 3,
   },
   daftarButtonText: {
     color: '#FFFFFF',

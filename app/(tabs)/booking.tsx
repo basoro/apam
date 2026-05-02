@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableOpacity, FlatList, ActivityIndicator, Image } from 'react-native';
 import { useEffect, useState } from 'react';
-import { router } from 'expo-router';
+import { useRouter } from 'expo-router';
 import { useAuth } from '@/contexts/AuthContext';
 import { ChevronLeft, Calendar, User, MapPin, CheckCircle, Clock } from 'lucide-react-native';
 import { api } from '@/lib/api';
@@ -8,16 +8,17 @@ import { LinearGradient } from 'expo-linear-gradient';
 
 export default function BookingScreen() {
   const { session, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [loading, setLoading] = useState(true);
   const [bookings, setBookings] = useState([]);
   const [doctorMap, setDoctorMap] = useState<any>({});
   const [clinicMap, setClinicMap] = useState<any>({});
 
   useEffect(() => {
-    if (!authLoading && !session) {
-      router.replace('/login');
-    } else if (session) {
+    if (session) {
       fetchData();
+    } else {
+      setLoading(false);
     }
   }, [session, authLoading]);
 
@@ -139,13 +140,39 @@ export default function BookingScreen() {
     );
   }
 
+  if (!session) {
+    return (
+      <View style={styles.container}>
+        <LinearGradient colors={['#62B986', '#72C996']} style={styles.header}>
+          <View style={styles.headerTop}>
+            <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+              <ChevronLeft size={24} color="#FFF" />
+            </TouchableOpacity>
+            <Text style={styles.headerTitle}>Riwayat Booking</Text>
+          </View>
+        </LinearGradient>
+        <View style={styles.emptyContainer}>
+          <Text style={styles.emptyTitle}>Login Diperlukan</Text>
+          <Text style={styles.emptySubtitle}>
+            Silakan login terlebih dahulu untuk melihat data booking Anda.
+          </Text>
+          <TouchableOpacity style={styles.actionButton} onPress={() => router.push('/login')}>
+            <Text style={styles.actionButtonText}>Ke Halaman Login</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <LinearGradient colors={['#62B986', '#72C996']} style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
-          <ChevronLeft size={24} color="#FFF" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Riwayat Booking</Text>
+        <View style={styles.headerTop}>
+          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+            <ChevronLeft size={24} color="#FFF" />
+          </TouchableOpacity>
+          <Text style={styles.headerTitle}>Riwayat Booking</Text>
+        </View>
       </LinearGradient>
 
       {loading ? (
@@ -195,11 +222,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
     paddingTop: 60,
     paddingHorizontal: 20,
     paddingBottom: 24,
+    borderBottomLeftRadius: 32,
+    borderBottomRightRadius: 32,
+  },
+  headerTop: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 24,
   },
   backButton: {
     width: 40,
@@ -329,7 +361,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingTop: 80,
+    paddingTop: 100,
     paddingHorizontal: 40,
   },
   emptyImage: {
