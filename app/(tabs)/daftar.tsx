@@ -72,7 +72,13 @@ export default function DaftarScreen() {
   const [bookingError, setBookingError] = useState('');
   const [bookingSuccess, setBookingSuccess] = useState(false);
   const [bookingSuccessMessage, setBookingSuccessMessage] = useState('');
-  const [registerNotice, setRegisterNotice] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
+  const [registerResultVisible, setRegisterResultVisible] = useState(false);
+  const [registerResult, setRegisterResult] = useState<{
+    type: 'success' | 'error';
+    title: string;
+    message: string;
+    creds?: { nama: string; noRm: string; nik: string };
+  } | null>(null);
 
   // Form State
   const [form, setForm] = useState({
@@ -302,16 +308,27 @@ export default function DaftarScreen() {
   };
 
   const handleRegister = async () => {
-    setRegisterNotice(null);
+    setRegisterResult(null);
+    setRegisterResultVisible(false);
 
     // Validation
     if (!form.nm_pasien || !form.no_ktp || !form.no_tlp || !form.alamat) {
-      setRegisterNotice({ type: 'error', text: 'Mohon lengkapi semua field wajib (*).' });
+      setRegisterResult({
+        type: 'error',
+        title: 'Gagal',
+        message: 'Mohon lengkapi semua field wajib (*).',
+      });
+      setRegisterResultVisible(true);
       return;
     }
 
     if (form.no_ktp.length < 16) {
-      setRegisterNotice({ type: 'error', text: 'NIK harus 16 digit.' });
+      setRegisterResult({
+        type: 'error',
+        title: 'Gagal',
+        message: 'NIK harus 16 digit.',
+      });
+      setRegisterResultVisible(true);
       return;
     }
 
@@ -324,20 +341,44 @@ export default function DaftarScreen() {
 
       const response = await api.pasien.create(payload);
 
-      if (response.data.status === 'success' || response.status === 201 || response.status === 200) {
-        setRegisterNotice({
+      const backendStatus = String(response?.data?.status || '').toLowerCase();
+      const isBackendSuccess = backendStatus === 'success' || backendStatus === 'ok';
+      const isHttpSuccess = response.status === 200 || response.status === 201;
+
+      if (isHttpSuccess && (isBackendSuccess || !backendStatus)) {
+        const data = (response?.data as any)?.data ?? response?.data ?? {};
+        const noRm =
+          String(
+            data?.no_rkm_medis ||
+              data?.noRM ||
+              data?.no_rm ||
+              data?.no_rkm ||
+              data?.no_rkmmedis ||
+              ''
+          ).trim();
+
+        setRegisterResult({
           type: 'success',
-          text: 'Pendaftaran pasien baru berhasil. Silakan login menggunakan NIK sebagai password.',
+          title: 'Berhasil',
+          message: 'Pendaftaran pasien baru berhasil. Gunakan NIK sebagai password sementara untuk login.',
+          creds: {
+            nama: String(form.nm_pasien || '').trim(),
+            noRm: noRm || '-',
+            nik: String(form.no_ktp || '').trim(),
+          },
         });
+        setRegisterResultVisible(true);
       } else {
         throw new Error(response.data?.message || 'Gagal mendaftarkan pasien');
       }
     } catch (error: any) {
       console.error('Registration error:', error);
-      setRegisterNotice({
+      setRegisterResult({
         type: 'error',
-        text: error?.message || 'Terjadi kesalahan saat mendaftar.',
+        title: 'Gagal',
+        message: error?.message || 'Terjadi kesalahan saat mendaftar.',
       });
+      setRegisterResultVisible(true);
     } finally {
       setLoading(false);
     }
@@ -519,18 +560,61 @@ export default function DaftarScreen() {
               </>
             )}
           </TouchableOpacity>
-          {registerNotice && (
-            <View
-              style={[
-                styles.registerNoticeBox,
-                registerNotice.type === 'success' ? styles.registerNoticeSuccess : styles.registerNoticeError,
-              ]}
-            >
-              <Text style={styles.registerNoticeText}>{registerNotice.text}</Text>
-            </View>
-          )}
           <View style={{ height: 100 }} />
         </ScrollView>
+        <Modal
+          visible={registerResultVisible}
+          transparent
+          animationType="fade"
+          onRequestClose={() => setRegisterResultVisible(false)}
+        >
+          <View style={styles.registerModalOverlay}>
+            <View style={styles.registerModalCard}>
+              {registerResult?.type === 'success' ? (
+                <CheckCircle2 size={44} color="#2E7D32" />
+              ) : (
+                <X size={44} color="#EF5350" />
+              )}
+              <Text
+                style={[
+                  styles.registerModalTitle,
+                  registerResult?.type === 'success' ? styles.registerModalTitleSuccess : styles.registerModalTitleError,
+                ]}
+              >
+                {registerResult?.title || (registerResult?.type === 'success' ? 'Berhasil' : 'Gagal')}
+              </Text>
+              <Text style={styles.registerModalText}>{registerResult?.message || ''}</Text>
+
+              {registerResult?.type === 'success' && registerResult?.creds ? (
+                <View style={styles.credentialBox}>
+                  <View style={styles.credentialRow}>
+                    <Text style={styles.credentialLabel}>Nama</Text>
+                    <Text style={styles.credentialValue}>{registerResult.creds.nama || '-'}</Text>
+                  </View>
+                  <View style={styles.credentialRow}>
+                    <Text style={styles.credentialLabel}>No. RM</Text>
+                    <Text style={styles.credentialValue}>{registerResult.creds.noRm || '-'}</Text>
+                  </View>
+                  <View style={styles.credentialRow}>
+                    <Text style={styles.credentialLabel}>Password Sementara</Text>
+                    <Text style={styles.credentialValue}>{registerResult.creds.nik || '-'}</Text>
+                  </View>
+                </View>
+              ) : null}
+
+              <TouchableOpacity
+                style={styles.registerModalButton}
+                onPress={() => {
+                  const isSuccess = registerResult?.type === 'success';
+                  setRegisterResultVisible(false);
+                  if (isSuccess) setShowForm(false);
+                }}
+              >
+                <Text style={styles.registerModalButtonText}>Tutup</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Modal>
         <BlurView
           intensity={30}
           tint="light"
@@ -666,7 +750,7 @@ export default function DaftarScreen() {
         </ScrollView>
 
         {/* Picker Modals */}
-        <Modal visible={activeModal !== null} transparent animationType="slide">
+        <Modal visible={activeModal !== null} transparent animationType="fade">
           <View style={styles.modalOverlay}>
             <View style={styles.modalContainer}>
               <View style={styles.modalHeader}>
@@ -968,24 +1052,78 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: '700',
   },
-  registerNoticeBox: {
+  registerModalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.45)',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
+  },
+  registerModalCard: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 20,
+    alignItems: 'center',
+  },
+  registerModalTitle: {
     marginTop: 10,
-    borderRadius: 10,
-    paddingVertical: 10,
-    paddingHorizontal: 12,
-  },
-  registerNoticeSuccess: {
-    backgroundColor: '#DCFCE7',
-  },
-  registerNoticeError: {
-    backgroundColor: '#FEE2E2',
-  },
-  registerNoticeText: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: '#1F2937',
+    fontSize: 18,
+    fontWeight: '800',
     textAlign: 'center',
-    lineHeight: 18,
+  },
+  registerModalTitleSuccess: {
+    color: '#1B5E20',
+  },
+  registerModalTitleError: {
+    color: '#B91C1C',
+  },
+  registerModalText: {
+    marginTop: 8,
+    fontSize: 14,
+    color: '#4B5563',
+    textAlign: 'center',
+    lineHeight: 20,
+    fontWeight: '600',
+  },
+  credentialBox: {
+    marginTop: 14,
+    alignSelf: 'stretch',
+    borderRadius: 14,
+    padding: 14,
+    backgroundColor: '#F9FAFB',
+    borderWidth: 1,
+    borderColor: '#EEF2F6',
+    gap: 10,
+  },
+  credentialRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: 12,
+  },
+  credentialLabel: {
+    fontSize: 12,
+    color: '#6B7280',
+    fontWeight: '700',
+  },
+  credentialValue: {
+    fontSize: 12,
+    color: '#111827',
+    fontWeight: '800',
+    flex: 1,
+    textAlign: 'right',
+  },
+  registerModalButton: {
+    marginTop: 16,
+    backgroundColor: '#62B986',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 10,
+    alignSelf: 'stretch',
+    alignItems: 'center',
+  },
+  registerModalButtonText: {
+    color: '#FFF',
+    fontWeight: '800',
+    fontSize: 14,
   },
   inputDisabled: {
     backgroundColor: '#F9F9F9',
@@ -1001,13 +1139,14 @@ const styles = StyleSheet.create({
   modalOverlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'flex-end',
+    justifyContent: 'center',
+    paddingHorizontal: 24,
   },
   modalContainer: {
     backgroundColor: '#FFF',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    height: '70%',
+    borderRadius: 16,
+    width: '100%',
+    maxHeight: '70%',
     padding: 24,
   },
   modalHeader: {
