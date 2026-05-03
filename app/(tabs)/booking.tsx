@@ -74,8 +74,31 @@ export default function BookingScreen() {
 
   const renderItem = ({ item }: { item: any }) => {
     const status = getStatusBadge(item.status);
+    const dokterName = doctorMap[item.kd_dokter] || item.kd_dokter || '-';
+    const poliName = clinicMap[item.kd_poli] || item.kd_poli || '-';
     return (
-      <View style={styles.card}>
+      <TouchableOpacity
+        style={styles.card}
+        activeOpacity={0.9}
+        onPress={() =>
+          router.push({
+            pathname: '/booking-ticket',
+            params: {
+              no_booking: String(item.no_booking || ''),
+              no_reg: String(item.no_reg || ''),
+              status: String(item.status || ''),
+              tanggal_booking: String(item.tanggal_booking || ''),
+              tanggal_periksa: String(item.tanggal_periksa || ''),
+              kd_dokter: String(item.kd_dokter || ''),
+              nm_dokter: String(dokterName),
+              kd_poli: String(item.kd_poli || ''),
+              nm_poli: String(poliName),
+              no_rkm_medis: String(session?.no_rkm_medis || ''),
+              nm_pasien: String((session as any)?.nm_pasien || ''),
+            },
+          })
+        }
+      >
         <View style={styles.cardHeader}>
           <View style={styles.bookingIdContainer}>
             <Text style={styles.bookingLabel}>No. Booking</Text>
@@ -94,7 +117,7 @@ export default function BookingScreen() {
           </View>
           <View style={styles.infoText}>
             <Text style={styles.label}>Dokter</Text>
-            <Text style={styles.value}>{doctorMap[item.kd_dokter] || item.kd_dokter}</Text>
+            <Text style={styles.value}>{dokterName}</Text>
           </View>
         </View>
 
@@ -104,7 +127,7 @@ export default function BookingScreen() {
           </View>
           <View style={styles.infoText}>
             <Text style={styles.label}>Poliklinik</Text>
-            <Text style={styles.value}>{clinicMap[item.kd_poli] || item.kd_poli}</Text>
+            <Text style={styles.value}>{poliName}</Text>
           </View>
         </View>
 
@@ -129,7 +152,7 @@ export default function BookingScreen() {
             </View>
           )}
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
 

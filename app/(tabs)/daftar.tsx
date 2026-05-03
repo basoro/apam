@@ -232,17 +232,12 @@ export default function DaftarScreen() {
     if (!session?.no_rkm_medis) {
       const msg = 'Sesi login tidak valid. Silakan login ulang.';
       setBookingError(msg);
-      Alert.alert('Error', msg);
       return;
     }
 
     if (!bookingForm.kd_poli || !bookingForm.kd_dokter || !bookingForm.kd_pj) {
       const msg = 'Mohon lengkapi pendaftaran Anda.';
       setBookingError(msg);
-      Alert.alert('Error', msg);
-      if (Platform.OS === 'web' && typeof globalThis.alert === 'function') {
-        globalThis.alert(msg);
-      }
       return;
     }
 
@@ -273,7 +268,6 @@ export default function DaftarScreen() {
         setBookingError('');
         setBookingSuccess(true);
         setBookingSuccessMessage('Pendaftaran berhasil. Silahkan cek menu Riwayat untuk detail antrian.');
-        Alert.alert('Berhasil', 'Pendaftaran berhasil. Silahkan cek menu Riwayat untuk detail antrian.');
       } else {
         throw new Error(
           response?.data?.message ||
@@ -302,10 +296,6 @@ export default function DaftarScreen() {
         error?.message ||
         'Gagal melakukan pendaftaran. Silahkan coba lagi.';
       setBookingError(errorMessage);
-      Alert.alert('Error', errorMessage);
-      if (Platform.OS === 'web' && typeof globalThis.alert === 'function') {
-        globalThis.alert(errorMessage);
-      }
     } finally {
       setLoading(false);
     }
@@ -317,13 +307,11 @@ export default function DaftarScreen() {
     // Validation
     if (!form.nm_pasien || !form.no_ktp || !form.no_tlp || !form.alamat) {
       setRegisterNotice({ type: 'error', text: 'Mohon lengkapi semua field wajib (*).' });
-      Alert.alert('Error', 'Mohon lengkapi semua field wajib (*)');
       return;
     }
 
     if (form.no_ktp.length < 16) {
       setRegisterNotice({ type: 'error', text: 'NIK harus 16 digit.' });
-      Alert.alert('Error', 'NIK harus 16 digit');
       return;
     }
 
@@ -341,11 +329,6 @@ export default function DaftarScreen() {
           type: 'success',
           text: 'Pendaftaran pasien baru berhasil. Silakan login menggunakan NIK sebagai password.',
         });
-        Alert.alert(
-          'Berhasil',
-          'Pendaftaran pasien baru berhasil. Silahkan login menggunakan NIK sebagai password.',
-          [{ text: 'OK', onPress: () => setShowForm(false) }]
-        );
       } else {
         throw new Error(response.data?.message || 'Gagal mendaftarkan pasien');
       }
@@ -355,7 +338,6 @@ export default function DaftarScreen() {
         type: 'error',
         text: error?.message || 'Terjadi kesalahan saat mendaftar.',
       });
-      Alert.alert('Error', error.message || 'Terjadi kesalahan saat mendaftar');
     } finally {
       setLoading(false);
     }
